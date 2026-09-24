@@ -1,0 +1,50 @@
+/* One place for every colour in the room. Retint the whole site from here. */
+export const P = {
+  floor: '#c0895a',
+  floorAlt: '#b57f4e',
+  floorDark: '#8a5f38',
+  wall: '#e7dccb',
+  wallShade: '#ded2bf',
+  trim: '#f5efe4',
+  wood: '#a9743f',
+  woodDark: '#6f4a27',
+  woodLight: '#c99a67',
+  metal: '#9aa3ae',
+  metalDark: '#474e58',
+  fabric: '#5b6b8c',
+  fabricDark: '#3d4a64',
+  red: '#c8102e',
+  redDeep: '#8d0b20',
+  cream: '#efe6d8',
+  black: '#23262e',
+  ink: '#161920',
+  screen: '#0d131e',
+  green: '#5da271',
+  paper: '#f2ead8',
+}
+
+/* Day / night mood. Everything that changes at dusk is described here. */
+export const MOODS = {
+  day: {
+    bg: '#cfe3ef',
+    fog: ['#d8e6ef', 18, 58],
+    ambient: { color: '#fff3e2', intensity: 1.15 },
+    sun: { color: '#ffe7c4', intensity: 2.4, position: [5.5, 7.5, -5.5] },
+    fill: { color: '#b9d4ff', intensity: 0.5 },
+    sky: '#9ec8e8',
+    skyLow: '#e7d9c4',
+    city: '#a9bcce',
+    beam: 0.16,
+  },
+  night: {
+    bg: '#0a0d18',
+    fog: ['#0a0d18', 12, 34],
+    ambient: { color: '#4a4a72', intensity: 0.44 },
+    sun: { color: '#8fa8ff', intensity: 0.28, position: [5.5, 7.5, -5.5] },
+    fill: { color: '#5a5480', intensity: 0.24 },
+    sky: '#0b1226',
+    skyLow: '#1d2444',
+    city: '#141a2c',
+    beam: 0,
+  },
+}

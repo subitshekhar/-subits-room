@@ -1,0 +1,53 @@
+/*
+ * Every JSX component referenced must actually be defined or imported.
+ *
+ * `vite build` does not catch this — an undefined identifier is only a
+ * ReferenceError at render time, which shows up as a blank room. This has
+ * bitten three times now (AdditiveBlending, Gallery/Player, and a slice
+ * between two section comments that quietly deleted Couch and FloorLamp).
+ *
+ *   npm run check
+ */
+import { readdirSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
+
+const INTRINSIC = /^[a-z]/ /* <mesh>, <group>, <planeGeometry> … */
+const files = []
+for (const dir of ['src', 'src/scene', 'src/ui']) {
+  for (const f of readdirSync(dir)) {
+    if (f.endsWith('.jsx')) files.push(join(dir, f))
+  }
+}
+
+let bad = 0
+for (const file of files) {
+  /* strip comments: a <Tag> mentioned in prose is not a reference */
+  const src = readFileSync(file, 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')
+    .replace(/(^|[^:])\/\/[^\n]*/g, '$1 ')
+
+  const defined = new Set()
+  for (const m of src.matchAll(/(?:function|const|class)\s+([A-Z][A-Za-z0-9_]*)/g)) defined.add(m[1])
+  /* anything pulled in from another module */
+  for (const m of src.matchAll(/import\s+([\s\S]*?)\s+from/g)) {
+    for (const name of m[1].replace(/[{}]/g, ' ').split(',')) {
+      const clean = name.trim().split(/\s+as\s+/).pop()
+      if (clean) defined.add(clean)
+    }
+  }
+
+  const used = new Set()
+  for (const m of src.matchAll(/<([A-Za-z][A-Za-z0-9_.]*)/g)) {
+    const tag = m[1].split('.')[0]
+    if (!INTRINSIC.test(tag)) used.add(tag)
+  }
+
+  const missing = [...used].filter((n) => !defined.has(n))
+  if (missing.length) {
+    bad++
+    console.log(`${file}\n  undefined: ${missing.join(', ')}`)
+  }
+}
+
+console.log(bad ? `\n${bad} file(s) with undefined components` : `all components defined across ${files.length} files`)
+process.exit(bad ? 1 : 0)

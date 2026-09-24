@@ -1,0 +1,12 @@
+node_modules
+dist
+.DS_Store
+*.local
+
+# texture previews from `npm run textures`
+.preview
+
+# The originals you dropped in live here; the copies the app actually
+# serves are in public/, so only those are committed.
+/mosalah.png
+/places-map.svg
