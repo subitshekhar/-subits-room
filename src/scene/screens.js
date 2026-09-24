@@ -3,7 +3,7 @@ import { CanvasTexture, SRGBColorSpace, LinearFilter } from 'three'
 /* ---------------------------------------------------------------------------
  * Canvas-drawn textures for the laptop. Drawing the screen rather than
  * faking it with a flat colour is what makes the laptop worth clicking —
- * you can read SUBIT_OS on it before you ever open the panel.
+ * you can read PANDA_OS on it before you ever open the panel.
  * ------------------------------------------------------------------------- */
 
 const C = {
@@ -45,7 +45,7 @@ const SCREEN_H = 400
 /* What's on the screen when you're just looking at the room. */
 const IDLE = [
   ['$ ', 'whoami'],
-  ['', 'subit — engineer'],
+  ['', 'panda — engineer'],
   ['', ''],
   ['$ ', 'ls ~'],
   ['', 'work/   projects/   experiments/   ideas/'],
@@ -54,7 +54,7 @@ const IDLE = [
 
 const HOVER = [
   ['$ ', 'whoami'],
-  ['', 'subit — engineer'],
+  ['', 'panda — engineer'],
   ['', ''],
   ['$ ', 'ls ~'],
   ['', 'work/   projects/   experiments/   ideas/'],
@@ -83,13 +83,13 @@ export function createScreen() {
     ctx.fillStyle = C.barText
     ctx.font = '500 15px ui-monospace, Menlo, monospace'
     ctx.textAlign = 'center'
-    ctx.fillText('subit@room — zsh', SCREEN_W / 2, 24)
+    ctx.fillText('panda@room — zsh', SCREEN_W / 2, 24)
     ctx.textAlign = 'left'
 
     /* title */
     ctx.fillStyle = C.cyan
     ctx.font = '500 20px ui-monospace, Menlo, monospace'
-    ctx.fillText('SUBIT_OS', 24, 76)
+    ctx.fillText('PANDA_OS', 24, 76)
     ctx.fillStyle = C.dim
     ctx.font = '400 15px ui-monospace, Menlo, monospace'
     ctx.fillText('v0.1', 132, 76)

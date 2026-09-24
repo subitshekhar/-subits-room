@@ -7,13 +7,13 @@
  * ------------------------------------------------------------------------- */
 
 export const SITE = {
-  name: 'SUBIT',
-  tagline: "Don't read my résumé. Come into my room.",
+  name: 'PANDA',
+  /* Text between asterisks is set apart — its own face and colour. */
+  tagline: 'not the *kung fu* one',
   email: 'subit.shekhar@gmail.com',
   socials: [
-    { label: 'GitHub', href: 'https://github.com/' },
-    { label: 'X', href: 'https://x.com/' },
-    { label: 'LinkedIn', href: 'https://linkedin.com/in/' },
+    { label: 'GitHub', href: 'https://github.com/subitshekhar' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/subit-shekhar' },
   ],
 }
 
@@ -25,9 +25,9 @@ export const SECTIONS = {
   work: {
     hotspot: 'Laptop',
     nav: 'WORK',
-    title: 'SUBIT_OS',
+    title: 'PANDA_OS',
     kind: 'terminal',
-    boot: ['SUBIT_OS v0.1 — booting…', 'mounting /home/subit', 'ok'],
+    boot: ['PANDA_OS v0.1 — booting…', 'mounting /home/panda', 'ok'],
     dirs: {
       '~/work': {
         blurb: 'Where the salary came from.',

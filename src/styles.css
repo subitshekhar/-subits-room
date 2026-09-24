@@ -1,5 +1,5 @@
 /* ===========================================================================
-   Subit's Room — overlay UI
+   Panda's Room — overlay UI
    The 3D scene owns the page; everything here floats on top of it.
    =========================================================================== */
 
@@ -79,6 +79,7 @@ canvas { display: block; touch-action: none; }
   text-shadow: 0 1px 18px rgba(255, 255, 255, 0.5);
 }
 .is-night .brand { text-shadow: 0 1px 18px rgba(0, 0, 0, 0.7); }
+
 .brand em {
   display: block;
   margin-top: 10px;
@@ -89,6 +90,18 @@ canvas { display: block; touch-action: none; }
   text-transform: uppercase;
   color: var(--ink-soft);
   opacity: 0.9;
+}
+
+/* "kung fu" set against the rest of the line: the display serif in italic,
+ * lowercase, and in the accent colour, so the joke reads as deliberate. */
+.brand .fu {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.5em;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  color: var(--accent);
+  padding: 0 0.08em;
 }
 
 .top-right { display: flex; gap: 8px; }

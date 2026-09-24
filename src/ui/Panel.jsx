@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { createSynth } from './synth.js'
 import { SECTIONS } from '../content.js'
 
-/* --------------------------------------------------- laptop: SUBIT_OS --- */
+/* --------------------------------------------------- laptop: PANDA_OS --- */
 
 /* Reveals `text` a character at a time once `go` is true. */
 function useTypewriter(text, speed = 18, go = true) {
@@ -24,7 +24,7 @@ function useTypewriter(text, speed = 18, go = true) {
 function Prompt({ cwd, children, caret }) {
   return (
     <p className="term-prompt">
-      <span className="user">subit@room</span>
+      <span className="user">panda@room</span>
       <span className="cyan">{cwd}</span>
       <span className="sigil">$</span>
       {children}

@@ -45,7 +45,7 @@ function Lights({ night }) {
 }
 
 export default function App() {
-  const [night, setNight] = useState(false)
+  const [night, setNight] = useState(true)
   const [active, setActive] = useState(null)
   const [hovered, setHovered] = useState(null)
   const [focus, setFocus] = useState(null)

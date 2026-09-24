@@ -1494,21 +1494,91 @@ function Shelf() {
   )
 }
 
+/*
+ * An astronaut helmet on the floor by the bed. The gold visor is what makes
+ * it read as one instantly — a plain white sphere is just a ball.
+ *
+ * three's sphere runs phi from the -X axis, so a visor centred on the front
+ * (+Z) starts at PI/2 minus half its sweep.
+ */
 function Helmet() {
+  /* A front visor, not a band round the middle. */
+  const SWEEP = Math.PI * 0.62
+
   return (
-    <group position={[1.0, 0.24, -4.15]} rotation={[0, -0.5, 0]}>
-      <GroundBlob position={[0, 0]} scale={[0.8, 0.8]} opacity={0.4} y={-0.228} />
+    <group position={[1.0, 0.235, -4.12]} rotation={[0, 0.55, 0]}>
+      <GroundBlob position={[0, 0]} scale={[0.85, 0.85]} opacity={0.42} y={-0.223} />
+
+      {/* shell */}
       <mesh castShadow receiveShadow>
-        <sphereGeometry args={[0.24, 20, 16]} />
-        <meshStandardMaterial color={P.cream} roughness={0.28} metalness={0.15} />
+        <sphereGeometry args={[0.23, 28, 22]} />
+        <meshStandardMaterial color="#eef0f2" roughness={0.42} metalness={0.06} />
       </mesh>
-      <mesh position={[0.15, 0.02, 0]} rotation={[0, -Math.PI / 2, 0]}>
-        <sphereGeometry args={[0.222, 20, 16, 0, Math.PI, 0.9, 0.9]} />
-        <meshStandardMaterial color={P.ink} roughness={0.15} metalness={0.5} side={2} />
+
+      {/* rim, drawn a touch wider than the visor so it frames it */}
+      <mesh>
+        <sphereGeometry
+          args={[0.2415, 30, 24, Math.PI / 2 - (SWEEP + 0.2) / 2, SWEEP + 0.2, Math.PI * 0.245, Math.PI * 0.5]}
+        />
+        <meshStandardMaterial color="#9aa0a8" roughness={0.5} metalness={0.3} side={2} />
       </mesh>
-      <mesh position={[0, 0.11, 0]}>
-        <boxGeometry args={[0.49, 0.065, 0.065]} />
-        <meshStandardMaterial color={P.red} roughness={0.4} />
+
+      {/*
+        The visor is barely metallic on purpose. There is no environment map
+        in this scene, and a high-metalness surface has almost no diffuse to
+        fall back on — it renders near-black, which is what a "gold" visor
+        did here at night. Low metalness plus a little emissive keeps it gold
+        in a dark room.
+      */}
+      <mesh castShadow>
+        <sphereGeometry args={[0.2465, 30, 24, Math.PI / 2 - SWEEP / 2, SWEEP, Math.PI * 0.29, Math.PI * 0.4]} />
+        <meshStandardMaterial
+          color="#e5b449"
+          /* Rough enough that nearby point lights spread into a sheen rather
+             than three tight highlights — which sat on the visor like eyes. */
+          roughness={0.52}
+          metalness={0.22}
+          emissive="#7a5410"
+          emissiveIntensity={0.3}
+          side={2}
+        />
+      </mesh>
+
+      {/* neck ring it rests on */}
+      <mesh position={[0, -0.185, 0]} castShadow receiveShadow>
+        <cylinderGeometry args={[0.135, 0.15, 0.055, 26]} />
+        <meshStandardMaterial color="#d7dade" roughness={0.5} metalness={0.2} />
+      </mesh>
+      <mesh position={[0, -0.152, 0]}>
+        <cylinderGeometry args={[0.142, 0.142, 0.022, 26]} />
+        <meshStandardMaterial color="#6b727b" roughness={0.5} metalness={0.35} />
+      </mesh>
+
+      {/* Housings on the sides, unlit. Two glowing dots on a dark face read
+          as eyes, which turned the whole thing into a bug. */}
+      {[-1, 1].map((side) => (
+        <group key={side} position={[side * 0.2, 0.045, -0.085]} rotation={[0, 0, side * -0.35]}>
+          <mesh castShadow>
+            <cylinderGeometry args={[0.03, 0.034, 0.042, 14]} />
+            <meshStandardMaterial color="#dfe2e6" roughness={0.55} />
+          </mesh>
+          <mesh position={[0, 0.023, 0]}>
+            <cylinderGeometry args={[0.024, 0.024, 0.006, 14]} />
+            <meshStandardMaterial color="#aeb4bb" roughness={0.45} metalness={0.3} />
+          </mesh>
+        </group>
+      ))}
+
+      {/* a short aerial */}
+      <mesh position={[-0.07, 0.225, -0.1]} rotation={[0.34, 0, 0.26]} castShadow>
+        <cylinderGeometry args={[0.005, 0.007, 0.1, 8]} />
+        <meshStandardMaterial color="#6b727b" roughness={0.45} metalness={0.4} />
+      </mesh>
+
+      {/* a patch, because every helmet has one */}
+      <mesh position={[-0.15, -0.055, 0.145]} rotation={[0, -0.8, 0]}>
+        <planeGeometry args={[0.07, 0.048]} />
+        <meshStandardMaterial color={P.red} roughness={0.8} />
       </mesh>
     </group>
   )

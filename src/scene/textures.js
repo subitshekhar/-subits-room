@@ -352,7 +352,7 @@ export function createVinylArt() {
   ctx.fillText('played too many times', c, c + 62)
   ctx.fillText('· · · · ·', c, c + 88)
   ctx.font = '400 13px ui-monospace, Menlo, monospace'
-  ctx.fillText('33 ⅓ RPM   ·   SUBIT', c, c + 114)
+  ctx.fillText('33 ⅓ RPM   ·   PANDA', c, c + 114)
 
   /* spindle hole */
   ctx.fillStyle = '#a29081'

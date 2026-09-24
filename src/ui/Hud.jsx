@@ -1,5 +1,10 @@
 import { SITE, SECTIONS, SECTION_ORDER } from '../content.js'
 
+/* Splits the tagline on asterisks; the odd pieces get set apart. */
+function Tagline({ text }) {
+  return text.split('*').map((part, i) => (i % 2 ? <span key={i} className="fu">{part}</span> : part))
+}
+
 export default function Hud({ night, toggleNight, active, select, reset, loaded, hovered, setHovered }) {
   /* Hovering a row lights the object in the room, and vice versa — the two
    * were previously unaware of each other. */
@@ -15,7 +20,9 @@ export default function Hud({ night, toggleNight, active, select, reset, loaded,
       <header className="hud top">
         <button className="brand" onClick={reset}>
           {SITE.name}
-          <em>{SITE.tagline}</em>
+          <em>
+            <Tagline text={SITE.tagline} />
+          </em>
         </button>
 
         <div className="top-right">
