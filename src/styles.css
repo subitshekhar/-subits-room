@@ -29,6 +29,29 @@
   --scrim: rgba(9, 12, 22, 0.82);
 }
 
+/*
+ * The page opens at the size it looks right at — the equivalent of setting
+ * the browser to 150%. Only the DOM overlay scales; the room does not,
+ * which is the whole point: the camera's field of view is fixed, so a
+ * browser zoom never changed the room's size either.
+ *
+ * This must NOT go on :root. R3F measures the canvas element's bounding
+ * rect to size its drawing buffer, and under a zoomed root that rect
+ * reports the scaled size — the buffer comes out 1.5x the viewport and the
+ * room renders displaced and clipped.
+ */
+:root { --ui: 1.5; }
+@media (max-width: 1500px) { :root { --ui: 1.3; } }
+@media (max-width: 1150px) { :root { --ui: 1.15; } }
+@media (max-width: 900px) { :root { --ui: 1; } }
+
+.hud,
+.foliage,
+.panel,
+.lightbox {
+  zoom: var(--ui);
+}
+
 * { box-sizing: border-box; }
 
 html, body, #root {
@@ -227,10 +250,10 @@ canvas { display: block; touch-action: none; }
 /* ------------------------------------------------- floating hover tag --- */
 .tag {
   font-family: var(--mono);
-  font-size: 10.5px;
+  font-size: calc(10.5px * var(--ui));
   letter-spacing: 0.07em;
   white-space: nowrap;
-  padding: 5px 11px;
+  padding: calc(5px * var(--ui)) calc(11px * var(--ui));
   border-radius: 999px;
   background: rgba(20, 18, 16, 0.86);
   color: #f6f1e8;
