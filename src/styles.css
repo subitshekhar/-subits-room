@@ -250,6 +250,11 @@ canvas { display: block; touch-action: none; }
   width: min(520px, 44vw);
   display: flex;
   flex-direction: column;
+  /* Resolve --ink here, inside .app. body sets `color: var(--ink)` against
+     :root, and .is-night only redefines the variable further down the tree —
+     so a panel that merely inherits picks up the DAY ink and its heading
+     goes near-black on a dark panel at night. */
+  color: var(--ink);
   background: var(--paper);
   backdrop-filter: blur(22px) saturate(1.2);
   border: 1px solid var(--line);

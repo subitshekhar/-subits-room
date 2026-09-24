@@ -493,7 +493,6 @@ function Laptop({ night }) {
   return (
     <Hotspot
       id="work"
-      label="Laptop → WORK"
       focus={FOCUS.work}
       lift={0.46}
       position={[-2.85, DESK_Y + 0.042, -3.98]}
@@ -544,7 +543,6 @@ function Notebook() {
   return (
     <Hotspot
       id="thinking"
-      label="Notebook → THOUGHTS"
       focus={FOCUS.thinking}
       lift={0.34}
       position={[-1.85, DESK_Y + 0.036, -3.95]}
@@ -730,7 +728,7 @@ function DeskLamp({ night }) {
 
       {hovered === 'lamp' && (
         <Html center position={[0.15, 0.95, 0]} zIndexRange={[20, 0]} pointerEvents="none">
-          <div className="tag">{night ? 'lights off → morning' : 'pull the cord → night'}</div>
+          <div className="tag">{night ? 'morning' : 'night'}</div>
         </Html>
       )}
     </group>
@@ -824,7 +822,7 @@ function Bookshelf({ night }) {
   return (
     <>
       <GroundBlob position={[-4.0, -2.95]} scale={[2.2, 3.4]} opacity={0.45} />
-      <Hotspot id="think" label="Bookshelf → THINK" focus={FOCUS.think} lift={1.5} position={[-4.2, 0, -2.95]}>
+      <Hotspot id="think" focus={FOCUS.think} lift={1.5} position={[-4.2, 0, -2.95]}>
         <B args={[0.5, 2.3, 0.06]} position={[0, 1.15, -1.02]} color="#5e4029" />
         <B args={[0.5, 2.3, 0.06]} position={[0, 1.15, 1.02]} color="#5e4029" />
         <B args={[0.52, 0.05, 2.1]} position={[0, 2.3, 0]} color="#5e4029" />
@@ -964,7 +962,6 @@ function SalahFrame() {
   return (
     <Hotspot
       id="liverpool"
-      label="Photograph → LIVERPOOL"
       focus={FOCUS.liverpool}
       lift={0.62}
       position={[-4.44, 1.8, -0.9]}
@@ -985,7 +982,6 @@ function VinylFrame() {
   return (
     <Hotspot
       id="music"
-      label="Record → MUSIC"
       focus={FOCUS.music}
       lift={0.64}
       position={[-4.44, 1.75, 3.4]}
@@ -1040,7 +1036,7 @@ function Telly({ night }) {
   return (
     <>
       <GroundBlob position={[-4.0, 1.5]} scale={[2.2, 3.6]} opacity={0.45} />
-      <Hotspot id="play" label="PS5 → PLAY" focus={FOCUS.play} lift={1.15} position={[-4.22, 0, 1.5]}>
+      <Hotspot id="play" focus={FOCUS.play} lift={1.15} position={[-4.22, 0, 1.5]}>
         {/* media unit */}
         <B args={[0.45, 0.46, 2.4]} position={[0, 0.23, 0]} color="#4a3220" rough={0.7} />
         <B args={[0.48, 0.04, 2.44]} position={[0.01, 0.48, 0]} color={ASH_DARK} rough={0.55} />
@@ -1355,7 +1351,6 @@ function Dslr() {
   return (
     <Hotspot
       id="photos"
-      label="Camera → PHOTOS"
       focus={FOCUS.photos}
       lift={0.34}
       position={[-0.58, 0.03, 0]}
@@ -1412,7 +1407,6 @@ function ModelCar() {
   return (
     <Hotspot
       id="machines"
-      label="Model car → MACHINES"
       focus={FOCUS.machines}
       lift={0.3}
       position={[0.02, 0.03, 0]}
@@ -1442,7 +1436,6 @@ function Speaker() {
   return (
     <Hotspot
       id="listen"
-      label="Speaker → LISTEN"
       focus={FOCUS.listen}
       lift={0.4}
       position={[0.62, 0.03, 0]}
@@ -1603,7 +1596,7 @@ function Racket() {
   const crosses = Array.from({ length: 11 }, (_, i) => -0.12 + i * 0.024)
 
   return (
-    <Hotspot id="sport" label="Racquet → SPORT" focus={FOCUS.sport} lift={0.95} position={[4.15, 0, -3.95]}>
+    <Hotspot id="sport" focus={FOCUS.sport} lift={0.95} position={[4.15, 0, -3.95]}>
       <group rotation={[0.16, -0.5, 0.1]}>
         {/* head: a tall ellipse, thick framed */}
         <group position={[0, HEAD_Y, 0]} scale={[1, HEAD_H / HEAD_W, 1]}>
@@ -1716,7 +1709,7 @@ function WallMap() {
   )
 
   return (
-    <Hotspot id="places" label="The wall → PLACES" focus={FOCUS.places} lift={1.0} position={[-2.5, 2.36, -4.44]}>
+    <Hotspot id="places" focus={FOCUS.places} lift={1.0} position={[-2.5, 2.36, -4.44]}>
       <B args={[2.58, 1.68, 0.07]} position={[0, 0, -0.01]} color="#4a3220" rough={0.7} />
       <B args={[2.46, 1.56, 0.02]} position={[0, 0, 0.03]} color="#0f1620" rough={0.9} />
       <mesh position={[0, 0, 0.042]}>
@@ -1739,7 +1732,7 @@ function Bed() {
   return (
     <>
       <GroundBlob position={[2.5, -3.3]} scale={[3.4, 3.4]} opacity={0.5} />
-      <Hotspot id="bed" label="Bed → 3:00 AM" focus={FOCUS.bed} lift={1.0} position={[2.5, 0, -3.35]}>
+      <Hotspot id="bed" focus={FOCUS.bed} lift={1.0} position={[2.5, 0, -3.35]}>
         <B args={[2.0, 0.75, 0.1]} position={[0, 0.38, -1.06]} color="#4a3220" rough={0.7} />
         <B args={[2.0, 0.28, 2.1]} position={[0, 0.14, 0]} color={P.wood} rough={0.75} />
         <B args={[1.92, 0.22, 2.0]} position={[0, 0.38, 0]} color={P.cream} rough={0.95} />
