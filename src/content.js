@@ -123,8 +123,8 @@ export const SECTIONS = {
   /* ------------------------------------------- BOOKSHELF → THINK --------- */
   think: {
     hotspot: 'Bookshelf',
-    nav: 'THINK',
-    title: 'THINK',
+    nav: 'BOOKS',
+    title: 'BOOKS',
     kind: 'list',
     subtitle: 'Currently reading, recently finished, permanently unfinished.',
     groups: [
@@ -153,7 +153,6 @@ export const SECTIONS = {
         heading: 'Fiction & things I picked up',
         items: [
           { name: 'Blindsight', meta: 'Peter Watts', body: 'Intelligence without consciousness. Ruined my week.' },
-          { name: 'Add yours', meta: '', body: '' },
         ],
       },
     ],
@@ -161,6 +160,8 @@ export const SECTIONS = {
 
   /* ---------------------------------------------- SCARF → LIVERPOOL ------ */
   liverpool: {
+    /* in the room, not in the index */
+    listed: false,
     kind: 'liverpool',
     hotspot: 'Photograph',
     nav: 'LIVERPOOL',
@@ -184,6 +185,8 @@ export const SECTIONS = {
 
   /* ---------------------------------------------- TV + PS5 → PLAY -------- */
   play: {
+    /* in the room, not in the index */
+    listed: false,
     kind: 'tv',
     hotspot: 'PS5',
     nav: 'PLAY',
@@ -199,6 +202,8 @@ export const SECTIONS = {
 
   /* ------------------------------------------------ SCREEN → WATCH ------ */
   watch: {
+    /* in the room, not in the index */
+    listed: false,
     kind: 'posters',
     hotspot: 'TV screen',
     nav: 'WATCH',
@@ -221,6 +226,8 @@ export const SECTIONS = {
 
   /* ----------------------------------- CAR SHELF + HELMET → MACHINES ----- */
   machines: {
+    /* in the room, not in the index */
+    listed: false,
     kind: 'list',
     hotspot: 'Model car',
     nav: 'MACHINES',
@@ -304,6 +311,8 @@ export const SECTIONS = {
 
   /* ---------------------------------------------- MAP → PLACES ----------- */
   places: {
+    /* in the room, not in the index */
+    listed: false,
     kind: 'places',
     hotspot: 'The wall',
     nav: 'PLACES',
@@ -402,6 +411,8 @@ export const SECTIONS = {
 
   /* ------------------------------------------ NOTEBOOK → THINKING -------- */
   thinking: {
+    /* in the room, not in the index */
+    listed: false,
     kind: 'notes',
     hotspot: 'Notebook',
     nav: 'THOUGHTS',
@@ -418,6 +429,8 @@ export const SECTIONS = {
 
   /* ---------------------------------------------- BED → 3AM -------------- */
   bed: {
+    /* in the room, not in the index */
+    listed: false,
     kind: 'writing',
     hotspot: 'Bed',
     nav: '3AM',
@@ -452,19 +465,18 @@ export const SECTIONS = {
   },
 }
 
-/* Order matters — this drives the little index in the corner. */
+/*
+ * Order matters — this drives the little index in the corner. It is
+ * deliberately shorter than the list of sections: the room should be worth
+ * exploring, and an index that names everything removes the reason to look.
+ * Anything left out is marked `listed: false` where it is defined, stays
+ * exactly as clickable in the room, and `npm run check` holds you to it.
+ */
 export const SECTION_ORDER = [
   'work',
   'think',
-  'liverpool',
-  'play',
-  'watch',
-  'machines',
   'photos',
   'awards',
   'music',
   'sport',
-  'places',
-  'thinking',
-  'bed',
 ]

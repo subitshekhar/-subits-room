@@ -68,11 +68,14 @@ for (const id of SECTION_ORDER) {
   }
 }
 for (const id of ids) {
-  /* an empty `hotspot` marks a section that is meant to be found, not listed */
-  if (!SECTIONS[id].hotspot) continue
+  const s = SECTIONS[id]
+  /* an empty `hotspot` marks a section that is meant to be found, not listed,
+   * and `listed: false` says the same thing out loud for one that has an
+   * object in the room but deliberately no row in the index */
+  if (!s.hotspot || s.listed === false) continue
   if (!SECTION_ORDER.includes(id)) {
     bad++
-    console.log(`section '${id}' is missing from SECTION_ORDER, so nothing links to it`)
+    console.log(`section '${id}' is missing from SECTION_ORDER — list it, or mark it listed: false`)
   }
 }
 

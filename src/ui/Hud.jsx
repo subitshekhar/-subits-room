@@ -201,7 +201,7 @@ export default function Hud({ night, toggleNight, active, select, reset, loaded,
       <Orbit />
 
       <footer className="hud bottom">
-        <span className="hint">drag to look around · click anything · esc to step back</span>
+        <span className="hint">drag to explore · click anything · esc to exit</span>
       </footer>
 
       {!loaded && (
