@@ -144,7 +144,7 @@ export default function App() {
         setHovered={setHovered}
       />
 
-      {active && <Panel id={active} onClose={reset} />}
+      {active && <Panel id={active} night={night} onClose={reset} />}
     </div>
   )
 }

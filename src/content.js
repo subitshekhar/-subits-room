@@ -33,14 +33,30 @@ export const SECTIONS = {
         blurb: 'Where the salary came from.',
         items: [
           {
-            name: 'Company — Senior Engineer',
-            meta: '2023 → now',
-            body: 'One line on what you own. The system, the scale, the thing that would break if you left.',
+            name: 'UnifyApps — Product Analyst',
+            meta: '2026 → now',
+            body:
+              'Enterprise workflow automation: the platform large companies use to build AI agents, apps and integrations. ' +
+              'I shipped a multi-agent content platform for an $18B CPG company that replaced manual copy rewrites for its ' +
+              'top retailers, a computer-use agent that resolves denied medical claims for a 14,000-person RCM firm, and ' +
+              'invoicing automation for a 38,000-home rental firm across Yardi and Snowflake.',
           },
           {
-            name: 'Previous Co. — Engineer',
-            meta: '2021 → 2023',
-            body: 'What you shipped and what it taught you.',
+            name: 'Orbi — Founding AI Engineer',
+            meta: '2024 → 2026',
+            body:
+              'VC-backed edtech building AI learning companions for children, growing 60% week on week in the US. ' +
+              'I built the voice-first conversational layer and the adaptive learning engine behind 100,000+ interactions, ' +
+              'plus the ingestion, inference and evaluation pipelines that cut our iteration time threefold. ' +
+              'The part I care about most is the safety work: guardrails and content filters, because the users were children.',
+          },
+          {
+            name: 'Walmart Tech — Summer Intern',
+            meta: '2025, two months',
+            body:
+              'Built a replica of Walmart services that could be made to fail on purpose, so ten-odd microservices could be ' +
+              'tested against real failure instead of hope. Added automated health checks and deep-dive diagnostics, which ' +
+              'is the kind of work nobody notices until an outage gets caught early.',
           },
         ],
       },
@@ -48,23 +64,49 @@ export const SECTIONS = {
         blurb: 'Things that exist because I made them exist.',
         items: [
           {
-            name: 'project-one',
-            meta: 'TypeScript · Postgres',
-            body: 'What it does in one sentence. Who uses it. Link it.',
-            href: '#',
+            name: 'multimodal-learning-companion',
+            meta: 'OpenAI · Gemini · realtime voice',
+            body:
+              'A voice tutor that answers fast enough to feel like a conversation, transcribes as you speak, and lets you ' +
+              'cut it off mid-sentence. Underneath: phoneme-level pronunciation scoring with a GPT fallback, and a pipeline ' +
+              'that streams from several models and fails over when one of them goes down.',
           },
           {
-            name: 'project-two',
-            meta: 'Python · LLMs',
-            body: 'The AI thing. Say the honest version, not the launch-post version.',
-            href: '#',
+            name: 'knightsight-ai',
+            meta: 'vision + LLM, in the browser',
+            body:
+              'A chess assistant that reads the board off your screen and answers questions about it in plain English. ' +
+              'It keeps the move history alongside what it sees, so it can talk about strategy rather than just the position.',
+          },
+          {
+            name: 'football-match-outcomes',
+            meta: 'gradient-boosted trees',
+            body:
+              '56% accuracy on match results, which sounds modest until you price it against the bookmakers with the Kelly ' +
+              'Index. Feature engineering bought the last ten percent.',
           },
         ],
       },
       '~/experiments': {
-        blurb: 'Weekend code. No promises about the tests.',
+        blurb: 'Coursework, and things I built to find out how they worked.',
         items: [
-          { name: 'tiny-interpreter', meta: 'Rust (allegedly)', body: 'Started. Not finished. Still thinking about it.' },
+          {
+            name: 'machine-translation',
+            meta: 'seq2seq · BiLSTM + attention',
+            body: 'Wrote the attention mechanism out by hand, which is the only way I was ever going to understand it.',
+          },
+          {
+            name: 'bank-management-db',
+            meta: 'SQL · 100+ queries',
+            body: 'Transaction history, branch transfers, and a front end so someone other than me could use it.',
+          },
+          {
+            name: 'library-issuance-system',
+            meta: 'UPPAAL',
+            body:
+              'Modelled the whole thing as a timed automaton, down to the bank interface that checks your balance before ' +
+              'it sells you a membership.',
+          },
           { name: 'this-website', meta: 'three.js', body: 'You are standing inside it.' },
         ],
       },
@@ -128,13 +170,13 @@ export const SECTIONS = {
     title: 'LIVERPOOL',
     subtitle: 'This one needs no explanation.',
     body: [
-      'Two sentences on how it started. A cousin, a TV, a night you were too young to be awake for.',
+      'A random match, some crazy goals, a TV, and thankfully a 9 p.m. Premier League kick-off.',
       'And the honest bit: why a result in another country can decide what kind of Sunday you have.',
     ],
     facts: [
-      { k: 'Since', v: '20XX' },
+      { k: 'Since', v: '2014' },
       { k: 'The night', v: 'Istanbul / Barcelona — pick yours' },
-      { k: 'The player', v: 'Gerrard' },
+      { k: 'The player', v: 'Mo Salah' },
       { k: 'Current mood', v: 'cautiously terrified' },
     ],
     anthem: "You'll Never Walk Alone",
@@ -240,8 +282,8 @@ export const SECTIONS = {
     nav: 'PLACES',
     title: 'PLACES',
     subtitle: 'Pins in a paper map, which is a deliberately inefficient way to remember things.',
-    been: ['Your city', 'Somewhere you loved', 'Somewhere that surprised you', 'Somewhere overrated'],
-    next: ['Anfield', 'Japan', 'Iceland', 'A long drive with no plan'],
+    been: ['Bangalore', 'San Francisco', 'Liverpool', 'Singapore'],
+    next: ['Japan', 'Spain', 'Italy', 'Switzerland'],
   },
 
 
@@ -249,33 +291,85 @@ export const SECTIONS = {
   photos: {
     hotspot: 'Camera',
     nav: 'PHOTOS',
-    title: 'SHOT ON A SATURDAY',
+    title: 'WHAT I POINTED IT AT',
     kind: 'gallery',
-    subtitle: 'Placeholder frames. Drop real ones into public/photos/ and point `src` at them.',
+    subtitle: 'Seventeen I kept.',
+    /* Files live in public/photos/. `place` is a guess from the frame —
+     * swap in the real ones. Leave it empty and only the year shows. */
     shots: [
-      { title: 'Morning, from the balcony', place: 'Home', year: '2025', src: null, tint: ['#e8c9a0', '#8c6b4f'] },
-      { title: 'The long way back', place: 'Somewhere north', year: '2025', src: null, tint: ['#9fb8c8', '#2f4658'] },
-      { title: 'Nobody on the pitch', place: 'Sunday, 7am', year: '2024', src: null, tint: ['#b6cfa6', '#3e5a3a'] },
-      { title: 'Shutter left open', place: 'A road at night', year: '2024', src: null, tint: ['#c9a5c4', '#3b2a44'] },
-      { title: 'She wasn\u2019t looking', place: 'A café', year: '2024', src: null, tint: ['#e0cdbb', '#6b584a'] },
-      { title: 'Too much grain, kept anyway', place: 'Anfield', year: '2023', src: null, tint: ['#d99a9a', '#5c2027'] },
+      { title: 'The bird got there first', place: 'Night', year: '2021', src: '/photos/the-bird-got-there-first.jpg' },
+      { title: 'All silhouette', place: 'Live', year: '2023', src: '/photos/all-silhouette.jpg' },
+      { title: 'Leopard, in profile', place: '', year: '2019', src: '/photos/leopard-in-profile.jpg' },
+      { title: 'The water did the work', place: 'Dusk', year: '2022', src: '/photos/the-water-did-the-work.jpg' },
+      { title: 'Smoke going up', place: 'Live', year: '2022', src: '/photos/smoke-going-up.jpg' },
+      { title: 'Close enough for the eyes', place: '', year: '2022', src: '/photos/close-enough-for-the-eyes.jpg' },
+      { title: 'Turned to face each other', place: 'Live', year: '2023', src: '/photos/turned-to-face-each-other.jpg' },
+      { title: 'Gulls over the boats', place: 'Water', year: '2023', src: '/photos/gulls-over-the-boats.jpg' },
+      { title: 'Long exposure at the desk', place: '', year: '2022', src: '/photos/long-exposure-at-the-desk.jpg' },
+      { title: 'Crescent, through the leaves', place: 'Night', year: '2022', src: '/photos/crescent-through-the-leaves.jpg' },
+      { title: 'From the back of the crowd', place: 'Live', year: '2022', src: '/photos/from-the-back-of-the-crowd.jpg' },
+      { title: 'He sat still for it', place: '', year: '2022', src: '/photos/he-sat-still-for-it.jpg' },
+      { title: 'Behind the music stand', place: 'Live', year: '2023', src: '/photos/behind-the-music-stand.jpg' },
+      { title: 'Caught mid-drop', place: '', year: '2022', src: '/photos/caught-mid-drop.jpg' },
+      { title: 'Red light, the whole band', place: 'Live', year: '2022', src: '/photos/red-light-whole-band.jpg' },
+      { title: 'Vocals and bass', place: 'Live', year: '2023', src: '/photos/vocals-and-bass.jpg' },
+      { title: 'Straight into the lens', place: 'Live', year: '2022', src: '/photos/straight-into-the-lens.jpg' },
     ],
   },
 
   /* ------------------------------------------- SPEAKER → LISTEN --------- */
-  listen: {
-    hotspot: 'Speaker',
-    nav: 'LISTEN',
-    title: 'NOW PLAYING',
-    kind: 'player',
-    subtitle: 'Press play. With no mp3 set, the room improvises something itself.',
-    /* Give a track a `src` (e.g. '/music/thing.mp3') and it plays the file.
-     * Leave it null and the page synthesises a slow pad in that key instead. */
-    tracks: [
-      { title: 'Rooms we do not leave', artist: 'placeholder', src: null, seconds: 96 },
-      { title: 'Late, and still thinking', artist: 'placeholder', src: null, seconds: 84 },
-      { title: 'Seventy-two hours', artist: 'placeholder', src: null, seconds: 108 },
-      { title: 'Nothing to add', artist: 'placeholder', src: null, seconds: 72 },
+  awards: {
+    hotspot: 'Trophy',
+    nav: 'AWARDS',
+    title: 'WORTH THE SHELF SPACE',
+    kind: 'list',
+    subtitle: 'The short list. Everything else was just a nice email.',
+    groups: [
+      {
+        heading: 'On the shelf',
+        items: [
+          {
+            name: 'Bruce Henderson Insight Ideathon',
+            meta: 'BCG · 2024',
+            body: 'Cleared the first round of a national competition with a fix for how airlines handle grievances.',
+          },
+          {
+            name: 'National Talent Search Examination',
+            meta: 'NCERT · 2018',
+            body: '1,408 of us got through Stage 1 out of a hundred thousand.',
+          },
+        ],
+      },
+      {
+        heading: 'Rooms I talked my way into',
+        items: [
+          {
+            name: 'Harvard Summer Business Academy',
+            meta: 'Harvard Student Agencies · 2020',
+            body:
+              'Ten of us went from India. Elevator pitches, PEST, SWOT, all of it pointed at ergonomic chairs.',
+          },
+          {
+            name: 'Placement Unit — core committee',
+            meta: 'BITS Pilani · 2024 → 2025',
+            body:
+              'Twelve students out of two thousand, sitting between the batch and 300+ companies. ' +
+              'In practice it meant being the person everyone texts at midnight.',
+          },
+        ],
+      },
+      {
+        heading: 'Things I ran',
+        items: [
+          {
+            name: 'PIEDS — Events Head',
+            meta: 'BITS Pilani · 2024',
+            body:
+              'The campus incubator, the one that produced RedBus, Swiggy and Pixxel. I put on a founders ' +
+              'conclave for 400 people and got turnout up by a third.',
+          },
+        ],
+      },
     ],
   },
 
@@ -339,7 +433,7 @@ export const SECTION_ORDER = [
   'play',
   'machines',
   'photos',
-  'listen',
+  'awards',
   'music',
   'sport',
   'places',

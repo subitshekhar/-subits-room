@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { createSynth } from './synth.js'
 import { SECTIONS } from '../content.js'
 
@@ -157,7 +158,10 @@ function Liverpool({ s }) {
           </div>
         ))}
       </dl>
-      <p className="anthem">{s.anthem}</p>
+      <p className="anthem">
+        <span>{s.anthem}</span>
+        <img className="crest" src="/lfc-crest.png" alt="" aria-hidden="true" />
+      </p>
     </div>
   )
 }
@@ -216,7 +220,10 @@ function Places({ s }) {
 }
 
 /* ------------------------------------------------------------ gallery --- */
-function Gallery({ s }) {
+/* Fallback wash for a shot with no file yet. */
+const tintOf = (sh) => `linear-gradient(150deg, ${sh.tint?.[0] ?? '#8fa6bd'}, ${sh.tint?.[1] ?? '#3a4658'})`
+
+function Gallery({ s, night }) {
   const [open, setOpen] = useState(null)
   const shot = open === null ? null : s.shots[open]
 
@@ -229,34 +236,44 @@ function Gallery({ s }) {
           <li key={sh.title}>
             <button
               onClick={() => setOpen(i)}
-              style={sh.src ? undefined : { background: `linear-gradient(150deg, ${sh.tint[0]}, ${sh.tint[1]})` }}
+              style={sh.src ? undefined : { background: tintOf(sh) }}
             >
               {sh.src && <img src={sh.src} alt={sh.title} loading="lazy" />}
             </button>
             <span className="cap">{sh.title}</span>
-            <span className="meta">
-              {sh.place} · {sh.year}
-            </span>
+            <span className="meta">{[sh.place, sh.year].filter(Boolean).join(' · ')}</span>
           </li>
         ))}
       </ul>
 
-      {shot && (
-        <div className="lightbox" onClick={() => setOpen(null)} role="presentation">
+      {/*
+        Portalled to the body. Inside the panel it picked up the panel's
+        zoom on top of its own, and Chrome makes a zoomed ancestor the
+        containing block for fixed children — so `inset: 0` resolved to the
+        panel's box and the backdrop covered a corner instead of the screen.
+        Out here it is also outside `.app`, which is where the theme lives,
+        so it carries its own copy of the class.
+      */}
+      {shot &&
+        createPortal(
           <div
-            className="big"
-            style={shot.src ? undefined : { background: `linear-gradient(150deg, ${shot.tint[0]}, ${shot.tint[1]})` }}
+            className={`lightbox ${night ? 'is-night' : 'is-day'}`}
+            onClick={() => setOpen(null)}
+            role="presentation"
           >
-            {shot.src && <img src={shot.src} alt={shot.title} />}
-          </div>
-          <p>
-            <strong>{shot.title}</strong>
-            <span>
-              {shot.place} · {shot.year}
-            </span>
-          </p>
-        </div>
-      )}
+            <div
+              className="big"
+              style={shot.src ? undefined : { background: tintOf(shot) }}
+            >
+              {shot.src && <img src={shot.src} alt={shot.title} />}
+            </div>
+            <p>
+              <strong>{shot.title}</strong>
+              <span>{[shot.place, shot.year].filter(Boolean).join(' · ')}</span>
+            </p>
+          </div>,
+          document.body
+        )}
     </div>
   )
 }
@@ -458,7 +475,7 @@ const RENDERERS = {
   drawer: DrawerPanel,
 }
 
-export default function Panel({ id, onClose }) {
+export default function Panel({ id, night, onClose }) {
   const s = id ? SECTIONS[id] : null
 
   useEffect(() => {
@@ -479,7 +496,7 @@ export default function Panel({ id, onClose }) {
         </button>
       </header>
       <div className="panel-body">
-        <Body s={s} />
+        <Body s={s} night={night} />
       </div>
     </div>
   )

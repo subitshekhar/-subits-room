@@ -15,7 +15,7 @@ export const FOCUS = {
   play: { pos: [1.18, 2.18, 1.81], target: [-4.2, 1.1, 1.5], shift: 0.4 },
   machines: { pos: [0.82, 1.94, -2.52], target: [0.27, 1.55, -4.36], shift: 0.4 },
   photos: { pos: [0.16, 1.95, -2.72], target: [-0.33, 1.6, -4.36], shift: 0.4 },
-  listen: { pos: [1.32, 1.96, -2.79], target: [0.85, 1.63, -4.36], shift: 0.4 },
+  awards: { pos: [1.32, 1.96, -2.79], target: [0.85, 1.63, -4.36], shift: 0.4 },
   music: { pos: [-1.69, 2.35, 4.38], target: [-4.35, 1.75, 3.4], shift: 0.4 },
   sport: { pos: [3.23, 1.89, -0.73], target: [4.1, 0.85, -3.9], shift: 0.4 },
   places: { pos: [-1.28, 3.12, 1.52], target: [-2.5, 2.3, -4.4], shift: 0.5 },

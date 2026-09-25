@@ -1430,46 +1430,76 @@ function ModelCar() {
   )
 }
 
-function Speaker() {
+/*
+ * A cup on a plinth, where the speaker used to stand. Gold here is low
+ * metalness on purpose: there is no environment map in this room, so a
+ * properly metallic material has almost nothing to reflect and renders
+ * near-black. The warmth comes from the colour and a little emissive.
+ */
+function Trophy() {
   const { active } = useRoom()
-  const live = active === 'listen'
+  const live = active === 'awards'
+
+  const gold = (
+    <meshStandardMaterial
+      color="#d9a93f"
+      roughness={0.28}
+      metalness={0.34}
+      emissive="#7a5410"
+      emissiveIntensity={live ? 0.9 : 0.35}
+    />
+  )
+
   return (
     <Hotspot
-      id="listen"
-      focus={FOCUS.listen}
+      id="awards"
+      focus={FOCUS.awards}
       lift={0.4}
       position={[0.62, 0.03, 0]}
       rotation={[0, -0.3, 0]}
     >
-      {/* cabinet */}
-      <RoundedBox args={[0.17, 0.27, 0.145]} radius={0.012} smoothness={3} position={[0, 0.135, 0]} castShadow receiveShadow>
-        <meshStandardMaterial color="#7a6144" roughness={0.72} />
+      {/* plinth, two tiers */}
+      <RoundedBox args={[0.115, 0.032, 0.115]} radius={0.006} smoothness={3} position={[0, 0.016, 0]} castShadow receiveShadow>
+        <meshStandardMaterial color="#2b2119" roughness={0.6} />
       </RoundedBox>
-      {/* grille face */}
-      <RoundedBox args={[0.15, 0.25, 0.012]} radius={0.006} smoothness={2} position={[0, 0.135, 0.072]} castShadow>
-        <meshStandardMaterial color="#2a2a2c" roughness={0.95} />
+      <RoundedBox args={[0.088, 0.02, 0.088]} radius={0.005} smoothness={3} position={[0, 0.042, 0]} castShadow>
+        <meshStandardMaterial color="#3a2c20" roughness={0.55} />
       </RoundedBox>
-      {/* woofer and tweeter — what makes it read as a speaker at this size */}
-      <mesh position={[0, 0.085, 0.081]} rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[0.052, 0.052, 0.006, 24]} />
-        <meshStandardMaterial color="#59595f" roughness={0.65} />
+
+      {/* the plaque you never read */}
+      <mesh position={[0, 0.016, 0.0585]}>
+        <planeGeometry args={[0.072, 0.018]} />
+        <meshStandardMaterial color="#c9b072" roughness={0.45} metalness={0.3} />
       </mesh>
-      <mesh position={[0, 0.085, 0.085]} rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[0.016, 0.016, 0.005, 16]} />
-        <meshStandardMaterial color="#4a4a50" roughness={0.4} metalness={0.5} />
+
+      {/* stem */}
+      <mesh position={[0, 0.076, 0]} castShadow>
+        <cylinderGeometry args={[0.013, 0.02, 0.048, 20]} />
+        {gold}
       </mesh>
-      <mesh position={[0, 0.198, 0.081]} rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[0.026, 0.026, 0.006, 20]} />
-        <meshStandardMaterial color="#59595f" roughness={0.65} />
+      <mesh position={[0, 0.104, 0]} castShadow>
+        <sphereGeometry args={[0.019, 20, 14]} />
+        {gold}
       </mesh>
-      {/* power light */}
-      <mesh position={[0.055, 0.03, 0.079]}>
-        <circleGeometry args={[0.006, 12]} />
-        <meshStandardMaterial
-          color={live ? '#7dffc4' : '#3f5a4c'}
-          emissive={live ? '#7dffc4' : '#22301f'}
-          emissiveIntensity={live ? 3 : 0.4}
-        />
+
+      {/* cup */}
+      <mesh position={[0, 0.156, 0]} castShadow>
+        <cylinderGeometry args={[0.058, 0.026, 0.09, 28]} />
+        {gold}
+      </mesh>
+      <mesh position={[0, 0.201, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+        <torusGeometry args={[0.058, 0.0055, 10, 28]} />
+        {gold}
+      </mesh>
+
+      {/* handles — the half-torus is what says "trophy" and not "goblet" */}
+      <mesh position={[0.062, 0.168, 0]} rotation={[0, 0, -Math.PI / 2]} castShadow>
+        <torusGeometry args={[0.027, 0.0055, 8, 18, Math.PI]} />
+        {gold}
+      </mesh>
+      <mesh position={[-0.062, 0.168, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
+        <torusGeometry args={[0.027, 0.0055, 8, 18, Math.PI]} />
+        {gold}
       </mesh>
     </Hotspot>
   )
@@ -1482,7 +1512,7 @@ function Shelf() {
       <B args={[1.75, 0.035, 0.035]} position={[0, -0.06, 0.12]} color={P.metalDark} metal={0.6} />
       <Dslr />
       <ModelCar />
-      <Speaker />
+      <Trophy />
     </group>
   )
 }

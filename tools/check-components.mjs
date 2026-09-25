@@ -50,4 +50,43 @@ for (const file of files) {
 }
 
 console.log(bad ? `\n${bad} file(s) with undefined components` : `all components defined across ${files.length} files`)
+
+/*
+ * Section ids are the other thing a green build will happily lie about.
+ * Renaming a section leaves SECTION_ORDER, FOCUS and the Hotspot ids
+ * pointing at a key that no longer exists; the bundle compiles and the page
+ * renders blank. Check the three agree.
+ */
+const { SECTIONS, SECTION_ORDER } = await import('../src/content.js')
+const { FOCUS } = await import('../src/scene/focus.js')
+const ids = new Set(Object.keys(SECTIONS))
+
+for (const id of SECTION_ORDER) {
+  if (!ids.has(id)) {
+    bad++
+    console.log(`SECTION_ORDER has '${id}', which is not a section`)
+  }
+}
+for (const id of ids) {
+  /* an empty `hotspot` marks a section that is meant to be found, not listed */
+  if (!SECTIONS[id].hotspot) continue
+  if (!SECTION_ORDER.includes(id)) {
+    bad++
+    console.log(`section '${id}' is missing from SECTION_ORDER, so nothing links to it`)
+  }
+}
+
+const objects = readFileSync(new URL('../src/scene/Objects.jsx', import.meta.url), 'utf8')
+for (const m of objects.matchAll(/\bid="([a-z0-9_-]+)"/g)) {
+  const id = m[1]
+  if (!ids.has(id)) {
+    bad++
+    console.log(`Hotspot id="${id}" has no section`)
+  } else if (!FOCUS[id]) {
+    bad++
+    console.log(`Hotspot id="${id}" has no FOCUS entry`)
+  }
+}
+
+if (!bad) console.log(`${ids.size} sections line up with SECTION_ORDER, FOCUS and the hotspots`)
 process.exit(bad ? 1 : 0)
