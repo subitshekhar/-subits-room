@@ -285,6 +285,39 @@ function dominantColour(src) {
   })
 }
 
+/*
+ * The shared playlist. A plain iframe rather than an API-controlled one:
+ * playback_update reports whether sound is happening but never which track,
+ * so wiring this to the record would spin it under whatever sleeve happened
+ * to be cued. The record follows the picker above, where we know.
+ */
+function Playlist({ s }) {
+  if (!s.playlist) return null
+  return (
+    <section className="playlist">
+      <h3>{s.playlistHeading}</h3>
+      {s.playlistNote && <p className="playlist-note">{s.playlistNote}</p>}
+      <iframe
+        title={s.playlistHeading}
+        src={`https://open.spotify.com/embed/playlist/${s.playlist}`}
+        width="100%"
+        height="352"
+        frameBorder="0"
+        loading="lazy"
+        allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+      />
+      <a
+        className="playlist-open"
+        href={`https://open.spotify.com/playlist/${s.playlist}`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        open in Spotify ↗
+      </a>
+    </section>
+  )
+}
+
 function Records({ s }) {
   const tracks = MUSIC.tracks ?? []
   const [cued, setCued] = useState(0)
@@ -364,6 +397,7 @@ function Records({ s }) {
             </ul>
           </section>
         ))}
+        <Playlist s={s} />
       </div>
     )
   }
@@ -413,6 +447,8 @@ function Records({ s }) {
           </ul>
         </section>
       )}
+
+      <Playlist s={s} />
 
       {MUSIC.generated && <p className="records-stamp">Counted up to {MUSIC.generated}.</p>}
     </div>

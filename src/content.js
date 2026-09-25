@@ -230,7 +230,12 @@ export const SECTIONS = {
     hotspot: 'Record',
     nav: 'MUSIC',
     title: 'MUSIC',
-    subtitle: 'Baked out of Spotify. Press play and the record on the wall turns.',
+    subtitle: 'Sounds that stayed with me.',
+    /* Just the id out of the share link — the bit after /playlist/ and
+     * before the '?'. Set it to null and the section disappears. */
+    playlist: '14INYX88QPzQlUpJzg2GLI',
+    playlistHeading: 'The whole thing',
+    playlistNote: 'Everything above and a few hundred more. Steal from it freely.',
     groups: [
       {
         heading: 'What I actually play',
