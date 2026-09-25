@@ -8,7 +8,6 @@ import {
   Float32BufferAttribute,
   Object3D,
   Quaternion,
-  RepeatWrapping,
   SRGBColorSpace,
   TextureLoader,
   Vector3,
@@ -18,6 +17,8 @@ import Hotspot from './Hotspot.jsx'
 import GroundBlob from './GroundBlob.jsx'
 import { DECOR, NO_HIT } from './decor.js'
 import { readPlayback, usePlayback } from '../playback.js'
+import { createScreensaver } from './screensaver.js'
+import { cheer, cheerLevel } from './celebrate.js'
 import { createBeamFade, createGlow } from './textures.js'
 import { useRoom } from '../roomContext.jsx'
 import { FOCUS } from './focus.js'
@@ -26,9 +27,7 @@ import {
   createPhotoPrint,
   createPortrait,
   createScribbleNote,
-  REEL,
   createSteam,
-  createTvReel,
   createVinylBoard,
   createVinylDisc,
   createVinylSheen,
@@ -1154,62 +1153,61 @@ function VinylFrame() {
  * across the current one, then jumps a whole panel — a cut. Only the
  * texture's offset changes, so nothing is redrawn or re-uploaded per frame.
  */
-const SHOT_SECONDS = 7.5
-
 function Telly({ night }) {
-  const tv = useMemo(() => createTvReel(), [])
+  const saver = useMemo(() => createScreensaver(), [])
   const glow = useRef()
-  const shot = useRef(0)
-  const elapsed = useRef(0)
+  const seen = useRef(0)
 
-  useEffect(() => {
-    tv.wrapS = RepeatWrapping
-    tv.repeat.x = REEL.repeat
-    tv.offset.x = 0
-    return () => tv.dispose()
-  }, [tv])
+  useEffect(() => () => saver.dispose(), [saver])
 
   useFrame((_, dt) => {
-    elapsed.current += dt
-    if (elapsed.current > SHOT_SECONDS) {
-      elapsed.current = 0
-      shot.current = (shot.current + 1) % REEL.shots
-    }
-    const through = elapsed.current / SHOT_SECONDS
-    tv.offset.x = shot.current * REEL.step + through * REEL.drift
+    saver.tick(dt)
+    /* the corner hit flares the spill on the wall along with the screen */
+    if (glow.current) glow.current.intensity = 5.4 + saver.flash * 26
 
-    /* the spill on the wall breathes a little with the picture */
-    if (glow.current) {
-      glow.current.intensity = 5.4 + Math.sin(elapsed.current * 1.7) * 0.5 + Math.sin(elapsed.current * 0.6) * 0.4
+    /* and the man on the couch gets to his feet about it */
+    if (saver.hits !== seen.current) {
+      seen.current = saver.hits
+      cheer()
     }
   })
 
   return (
     <>
       <GroundBlob position={[-4.0, 1.5]} scale={[2.2, 3.6]} opacity={0.45} />
-      <Hotspot id="play" focus={FOCUS.play} lift={1.15} position={[-4.22, 0, 1.5]}>
-        {/* media unit */}
-        <B args={[0.45, 0.46, 2.4]} position={[0, 0.23, 0]} color="#4a3220" rough={0.7} />
-        <B args={[0.48, 0.04, 2.44]} position={[0.01, 0.48, 0]} color={ASH_DARK} rough={0.55} />
 
-        {/*
-          The television stands proud of the unit on a neck. It used to sit
-          straight on the top, which put the bottom of the panel at the same
-          height as anything else on the shelf — the console ended up
-          intersecting the picture.
-        */}
+      {/*
+        The screen and the console are two different things you might want,
+        so they are two hotspots sharing an origin: click the panel for what
+        I watch, click the console for what I play.
+      */}
+      <Hotspot id="watch" focus={FOCUS.watch} lift={1.15} position={[-4.22, 0, 1.5]}>
         <group position={[0.06, 1.28, 0]} rotation={[0, Math.PI / 2, 0]}>
           <B args={[2.0, 1.15, 0.06]} position={[0, 0, 0]} color={P.ink} rough={0.6} />
           <mesh position={[0, 0, 0.035]}>
             <planeGeometry args={[1.9, 1.05]} />
-            <meshBasicMaterial map={tv} toneMapped={false} />
+            <meshBasicMaterial map={saver.tex} toneMapped={false} />
           </mesh>
           <B args={[0.12, 0.18, 0.1]} position={[0, -0.665, 0]} color={P.metalDark} metal={0.5} />
           <B args={[0.52, 0.035, 0.2]} position={[0, -0.772, 0]} color={P.metalDark} metal={0.5} />
         </group>
-        {night && (
-          <pointLight ref={glow} position={[0.7, 1.28, 0]} color="#8fb4e8" intensity={5.4} distance={5.5} decay={2} />
-        )}
+      </Hotspot>
+
+      {night && (
+        <pointLight
+          ref={glow}
+          position={[-3.52, 1.28, 1.5]}
+          color="#8fb4e8"
+          intensity={5.4}
+          distance={5.5}
+          decay={2}
+        />
+      )}
+
+      <Hotspot id="play" focus={FOCUS.play} lift={0.62} position={[-4.22, 0, 1.5]}>
+        {/* media unit */}
+        <B args={[0.45, 0.46, 2.4]} position={[0, 0.23, 0]} color="#4a3220" rough={0.7} />
+        <B args={[0.48, 0.04, 2.44]} position={[0.01, 0.48, 0]} color={ASH_DARK} rough={0.55} />
 
         {/* the console, lying flat on the shelf under the screen */}
         <group position={[0.02, 0.553, 0.62]}>
@@ -1277,6 +1275,18 @@ function Gamer() {
   const SHOULDER = 1.0
   const SHOULDER_HALF = 0.17
 
+  const arms = useRef([])
+  const held = useRef()
+
+  useFrame(() => {
+    const k = cheerLevel()
+    /* a little wobble while they are up, so it is not a mannequin pose */
+    const wobble = k > 0 ? Math.sin(performance.now() * 0.013) * 0.07 * k : 0
+    const swing = -2.05 * k + wobble
+    for (const a of arms.current) if (a) a.rotation.x = swing
+    if (held.current) held.current.rotation.x = swing
+  })
+
   return (
     <group position={[-0.46, 0, -0.04]} rotation={[0, 0.07, 0]}>
       {/* spine, leaning back into the cushions */}
@@ -1316,20 +1326,25 @@ function Gamer() {
         </mesh>
       ))}
 
-      {/* arms forward to the controller */}
+      {/*
+        Arms and controller hang off a group pinned at the shoulder line, so
+        throwing them up is one rotation about X. Built from fixed endpoints
+        they could only be raised by rebuilding the geometry every frame.
+      */}
       {[-1, 1].map((side) => (
-        <group key={`a${side}`}>
-          <Limb from={[side * SHOULDER_HALF, SHOULDER - 0.05, -0.12]} to={[side * 0.2, 0.8, 0.07]} radius={0.05} color={SHIRT} />
-          <Limb from={[side * 0.2, 0.8, 0.07]} to={[side * 0.085, 0.762, 0.25]} radius={0.04} color={SKIN} />
-          <mesh position={[side * 0.078, 0.757, 0.27]} castShadow>
+        <group key={`a${side}`} ref={(el) => (arms.current[(side + 1) / 2] = el)} position={[0, SHOULDER - 0.05, -0.12]}>
+          <Limb from={[side * SHOULDER_HALF, 0, 0]} to={[side * 0.2, -0.15, 0.19]} radius={0.05} color={SHIRT} />
+          <Limb from={[side * 0.2, -0.15, 0.19]} to={[side * 0.085, -0.188, 0.37]} radius={0.04} color={SKIN} />
+          <mesh position={[side * 0.078, -0.193, 0.39]} castShadow>
             <sphereGeometry args={[0.044, 12, 12]} />
             <meshStandardMaterial color={SKIN} roughness={0.8} />
           </mesh>
         </group>
       ))}
 
-      {/* the controller */}
-      <group position={[0, 0.752, 0.3]} rotation={[-0.4, 0, 0]}>
+      {/* the controller, raised with the hands that are holding it */}
+      <group ref={held} position={[0, SHOULDER - 0.05, -0.12]}>
+        <group position={[0, -0.198, 0.42]} rotation={[-0.4, 0, 0]}>
         <mesh castShadow>
           <boxGeometry args={[0.098, 0.034, 0.058]} />
           <meshStandardMaterial color="#e8e6e2" roughness={0.45} />
@@ -1344,6 +1359,7 @@ function Gamer() {
           <boxGeometry args={[0.04, 0.004, 0.019]} />
           <meshStandardMaterial color="#9fd8ff" emissive="#7fd8ff" emissiveIntensity={1.6} toneMapped={false} />
         </mesh>
+        </group>
       </group>
 
       {/* legs: thigh and shin the same length, feet flat on the floor */}

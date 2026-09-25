@@ -12,7 +12,10 @@ export const FOCUS = {
   work: { pos: [-1.82, 1.37, -2.54], target: [-2.92, 0.95, -4.0], shift: 0.46 },
   think: { pos: [0.83, 2.53, -1.69], target: [-4.2, 1.2, -2.95], shift: 0.5 },
   liverpool: { pos: [-1.68, 2.41, -0.64], target: [-4.4, 1.8, -0.9], shift: 0.42 },
-  play: { pos: [1.18, 2.18, 1.81], target: [-4.2, 1.1, 1.5], shift: 0.4 },
+  /* the panel, framed on its own */
+  watch: { pos: [-0.96, 2.23, 2.0], target: [-4.16, 1.28, 1.5], shift: 0.42 },
+  /* the console and the shelf it sits on, which is a much smaller subject */
+  play: { pos: [-2.25, 1.6, 2.52], target: [-4.15, 0.6, 1.95], shift: 0.3 },
   machines: { pos: [0.82, 1.94, -2.52], target: [0.27, 1.55, -4.36], shift: 0.4 },
   photos: { pos: [0.16, 1.95, -2.72], target: [-0.33, 1.6, -4.36], shift: 0.4 },
   awards: { pos: [1.32, 1.96, -2.79], target: [0.85, 1.63, -4.36], shift: 0.4 },

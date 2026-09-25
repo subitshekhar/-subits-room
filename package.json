@@ -8,6 +8,7 @@
     "build": "vite build",
     "spotify:auth": "node tools/spotify-auth.mjs",
     "spotify": "node tools/fetch-spotify.mjs",
+    "watch": "node tools/fetch-tmdb.mjs",
     "preview": "vite preview",
     "textures": "node tools/preview-textures.mjs",
     "focus": "node tools/check-focus.mjs",

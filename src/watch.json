@@ -1,0 +1,77 @@
+{
+  "generated": "2026-09-25",
+  "titles": [
+    {
+      "q": "Interstellar",
+      "kind": "movie",
+      "id": 157336,
+      "title": "Interstellar",
+      "year": "2014",
+      "poster": "/poster/movie-157336.jpg",
+      "url": "https://www.themoviedb.org/movie/157336"
+    },
+    {
+      "q": "Severance",
+      "kind": "tv",
+      "id": 95396,
+      "title": "Severance",
+      "year": "2022",
+      "poster": "/poster/tv-95396.jpg",
+      "url": "https://www.themoviedb.org/tv/95396"
+    },
+    {
+      "q": "The Bear",
+      "kind": "tv",
+      "id": 136315,
+      "title": "The Bear",
+      "year": "2022",
+      "poster": "/poster/tv-136315.jpg",
+      "url": "https://www.themoviedb.org/tv/136315"
+    },
+    {
+      "q": "Dune: Part Two",
+      "kind": "movie",
+      "id": 693134,
+      "title": "Dune: Part Two",
+      "year": "2024",
+      "poster": "/poster/movie-693134.jpg",
+      "url": "https://www.themoviedb.org/movie/693134"
+    },
+    {
+      "q": "Breaking Bad",
+      "kind": "tv",
+      "id": 1396,
+      "title": "Breaking Bad",
+      "year": "2008",
+      "poster": "/poster/tv-1396.jpg",
+      "url": "https://www.themoviedb.org/tv/1396"
+    },
+    {
+      "q": "Spider-Man: Across the Spider-Verse",
+      "kind": "movie",
+      "id": 569094,
+      "title": "Spider-Man: Across the Spider-Verse",
+      "year": "2023",
+      "poster": "/poster/movie-569094.jpg",
+      "url": "https://www.themoviedb.org/movie/569094"
+    },
+    {
+      "q": "Succession",
+      "kind": "tv",
+      "id": 76331,
+      "title": "Succession",
+      "year": "2018",
+      "poster": "/poster/tv-76331.jpg",
+      "url": "https://www.themoviedb.org/tv/76331"
+    },
+    {
+      "q": "Whiplash",
+      "kind": "movie",
+      "id": 244786,
+      "title": "Whiplash",
+      "year": "2014",
+      "poster": "/poster/movie-244786.jpg",
+      "url": "https://www.themoviedb.org/movie/244786"
+    }
+  ]
+}

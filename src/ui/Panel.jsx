@@ -4,6 +4,7 @@ import { createSynth } from './synth.js'
 import { SECTIONS } from '../content.js'
 import { setPlayback } from '../playback.js'
 import MUSIC from '../music.json'
+import WATCH from '../watch.json'
 
 /* --------------------------------------------------- laptop: PANDA_OS --- */
 
@@ -221,6 +222,74 @@ function Places({ s }) {
   )
 }
 
+/* ------------------------------------------------------------ posters --- */
+/*
+ * None of the artwork below is lazily loaded. The panel is zoomed, and
+ * Chrome will not fire a lazy image's intersection inside a zoomed
+ * container — tiles sitting plainly in the viewport just never loaded.
+ * Everything here is a few hundred KB and only mounts when its panel opens.
+ */
+
+/*
+ * Poster art where we have it, the title card drawn in type where we do not,
+ * so the section reads properly before anyone runs the fetch script.
+ */
+function Posters({ s }) {
+  const baked = WATCH.titles ?? []
+  const byQuery = useMemo(() => new Map(baked.map((t) => [t.q, t])), [baked])
+
+  const items = s.titles.map((t) => ({ ...byQuery.get(t.q), ...t }))
+  const anyArt = items.some((t) => t.poster)
+
+  return (
+    <div className="posters">
+      <p className="sub">{s.subtitle}</p>
+
+      {!anyArt && (
+        <p className="records-empty">
+          No poster art yet. Put a TMDB key in <code>.env.local</code> and run{' '}
+          <code>npm run watch</code>, and these fill in.
+        </p>
+      )}
+
+      <ol className="sheets">
+        {items.map((t, i) => (
+          <li key={t.q}>
+            <Wrap href={t.url}>
+              {t.poster ? (
+                <img src={t.poster} alt="" />
+              ) : (
+                <span className="placeholder">{t.q}</span>
+              )}
+              <span className="scrim" />
+              <span className="rank">{String(i + 1).padStart(2, '0')}</span>
+              <span className="kind">{t.kind === 'tv' ? 'series' : 'film'}</span>
+              <span className="who">
+                <strong>{t.title ?? t.q}</strong>
+                {t.year && <span>{t.year}</span>}
+              </span>
+            </Wrap>
+            {t.note && <p className="note">{t.note}</p>}
+          </li>
+        ))}
+      </ol>
+
+      {WATCH.generated && <p className="records-stamp">Art pulled {WATCH.generated}.</p>}
+    </div>
+  )
+}
+
+/* A link when there is somewhere to go, a plain box when there is not. */
+function Wrap({ href, children }) {
+  return href ? (
+    <a href={href} target="_blank" rel="noreferrer">
+      {children}
+    </a>
+  ) : (
+    <div>{children}</div>
+  )
+}
+
 /* ------------------------------------------------------------ records --- */
 
 const EMBED_API = 'https://open.spotify.com/embed/iframe-api/v1'
@@ -303,7 +372,7 @@ function Playlist({ s }) {
         width="100%"
         height="352"
         frameBorder="0"
-        loading="lazy"
+       
         allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"
       />
       <a
@@ -421,7 +490,7 @@ function Records({ s }) {
           <li key={t.id} className={i === cued ? 'on' : ''}>
             <button onClick={() => cue(i)}>
               <span className="n">{String(i + 1).padStart(2, '0')}</span>
-              {t.art ? <img src={t.art} alt="" loading="lazy" /> : <span className="noart" />}
+              {t.art ? <img src={t.art} alt="" /> : <span className="noart" />}
               <span className="who">
                 <strong>{t.title}</strong>
                 <span>{t.artist}</span>
@@ -444,7 +513,7 @@ function Records({ s }) {
             {MUSIC.artists.map((a, i) => (
               <li key={a.id ?? a.name}>
                 <a href={a.url} target="_blank" rel="noreferrer">
-                  {a.photo ? <img src={a.photo} alt="" loading="lazy" /> : <span className="noart" />}
+                  {a.photo ? <img src={a.photo} alt="" /> : <span className="noart" />}
                   <span className="scrim" />
                   <span className="rank">{String(i + 1).padStart(2, '0')}</span>
                   <span className="who">{a.name}</span>
@@ -481,7 +550,7 @@ function Gallery({ s, night }) {
               onClick={() => setOpen(i)}
               style={sh.src ? undefined : { background: tintOf(sh) }}
             >
-              {sh.src && <img src={sh.src} alt={sh.title} loading="lazy" />}
+              {sh.src && <img src={sh.src} alt={sh.title} />}
             </button>
             <span className="cap">{sh.title}</span>
             <span className="meta">{[sh.place, sh.year].filter(Boolean).join(' · ')}</span>
@@ -713,6 +782,7 @@ const RENDERERS = {
   places: Places,
   notes: Notes,
   writing: Writing,
+  posters: Posters,
   records: Records,
   gallery: Gallery,
   player: Player,

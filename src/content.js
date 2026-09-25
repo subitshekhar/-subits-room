@@ -197,6 +197,28 @@ export const SECTIONS = {
     allTime: ['RDR2', 'The Witcher 3', 'Hollow Knight', 'GTA V'],
   },
 
+  /* ------------------------------------------------ SCREEN → WATCH ------ */
+  watch: {
+    kind: 'posters',
+    hotspot: 'TV screen',
+    nav: 'WATCH',
+    title: 'CONTINUE WATCHING',
+    subtitle: 'On, recently off, and the ones I keep going back to.',
+    /* `tools/fetch-tmdb.mjs` fills src/watch.json from these. Each needs a
+     * `q` to search on and a `kind` of 'movie' or 'tv'; `note` is yours and
+     * is never overwritten. Add `year` if a title is ambiguous. */
+    titles: [
+      { q: 'Interstellar', kind: 'movie', note: 'The docking scene. Every time.' },
+      { q: 'Severance', kind: 'tv', note: 'Halfway through season two and thinking about it at work.' },
+      { q: 'The Bear', kind: 'tv', note: 'Stressful in a way I seem to enjoy.' },
+      { q: 'Dune: Part Two', kind: 'movie', note: '' },
+      { q: 'Breaking Bad', kind: 'tv', note: 'Finished, and still the bar.' },
+      { q: 'Spider-Man: Across the Spider-Verse', kind: 'movie', note: 'Every frame is a poster.' },
+      { q: 'Succession', kind: 'tv', note: '' },
+      { q: 'Whiplash', kind: 'movie', note: 'Not quite my tempo.' },
+    ],
+  },
+
   /* ----------------------------------- CAR SHELF + HELMET → MACHINES ----- */
   machines: {
     kind: 'list',
@@ -436,6 +458,7 @@ export const SECTION_ORDER = [
   'think',
   'liverpool',
   'play',
+  'watch',
   'machines',
   'photos',
   'awards',
