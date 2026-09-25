@@ -226,11 +226,11 @@ export const SECTIONS = {
 
   /* ---------------------------------------------- GUITAR → MUSIC --------- */
   music: {
-    kind: 'list',
+    kind: 'records',
     hotspot: 'Record',
     nav: 'MUSIC',
     title: 'MUSIC',
-    subtitle: 'What is on, and what has been on for years.',
+    subtitle: 'Baked out of Spotify. Press play and the record on the wall turns.',
     groups: [
       {
         heading: 'What I actually play',

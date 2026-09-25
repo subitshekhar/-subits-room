@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { createSynth } from './synth.js'
 import { SECTIONS } from '../content.js'
+import { setPlayback } from '../playback.js'
+import MUSIC from '../music.json'
 
 /* --------------------------------------------------- laptop: PANDA_OS --- */
 
@@ -216,6 +218,204 @@ function Places({ s }) {
         </section>
       </div>
     </>
+  )
+}
+
+/* ------------------------------------------------------------ records --- */
+
+const EMBED_API = 'https://open.spotify.com/embed/iframe-api/v1'
+
+/* Loads Spotify's embed API once, however many times this mounts. */
+let apiReady = null
+function spotifyApi() {
+  if (apiReady) return apiReady
+  apiReady = new Promise((resolve) => {
+    if (window.__spotifyIFrameApi) return resolve(window.__spotifyIFrameApi)
+    window.onSpotifyIframeApiReady = (api) => {
+      window.__spotifyIFrameApi = api
+      resolve(api)
+    }
+    const el = document.createElement('script')
+    el.src = EMBED_API
+    el.async = true
+    document.head.appendChild(el)
+  })
+  return apiReady
+}
+
+/*
+ * The colour the room borrows from a sleeve. Averaging every pixel gives mud,
+ * so this keeps the saturated ones and leans on those — the wash should read
+ * as "that album", not as beige.
+ */
+function dominantColour(src) {
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.onerror = () => resolve(null)
+    img.onload = () => {
+      const N = 32
+      const cv = document.createElement('canvas')
+      cv.width = cv.height = N
+      const ctx = cv.getContext('2d', { willReadFrequently: true })
+      ctx.drawImage(img, 0, 0, N, N)
+      let px
+      try {
+        px = ctx.getImageData(0, 0, N, N).data
+      } catch {
+        return resolve(null)
+      }
+      let r = 0, g = 0, b = 0, w = 0
+      for (let i = 0; i < px.length; i += 4) {
+        const mx = Math.max(px[i], px[i + 1], px[i + 2])
+        const mn = Math.min(px[i], px[i + 1], px[i + 2])
+        /* weight by saturation, and ignore anything nearly black or white */
+        const sat = mx ? (mx - mn) / mx : 0
+        if (mx < 26 || mn > 232) continue
+        const weight = 0.15 + sat * sat * 3
+        r += px[i] * weight
+        g += px[i + 1] * weight
+        b += px[i + 2] * weight
+        w += weight
+      }
+      if (!w) return resolve(null)
+      const hex = (v) => Math.min(255, Math.round(v / w)).toString(16).padStart(2, '0')
+      resolve(`#${hex(r)}${hex(g)}${hex(b)}`)
+    }
+    img.src = src
+  })
+}
+
+function Records({ s }) {
+  const tracks = MUSIC.tracks ?? []
+  const [cued, setCued] = useState(0)
+  const host = useRef(null)
+  const ctrl = useRef(null)
+
+  const track = tracks[cued] ?? null
+
+  /* build the embed once, then just point it at whatever is cued */
+  useEffect(() => {
+    if (!tracks.length || !host.current) return
+    let dead = false
+    spotifyApi().then((api) => {
+      if (dead || !host.current) return
+      api.createController(
+        host.current,
+        { uri: tracks[0].uri, width: '100%', height: 80 },
+        (c) => {
+          if (dead) return c.destroy?.()
+          ctrl.current = c
+          c.addListener('playback_update', (e) => {
+            setPlayback({ playing: !e.data.isPaused && !e.data.isBuffering })
+          })
+        }
+      )
+    })
+    return () => {
+      dead = true
+      setPlayback({ playing: false, track: null })
+      ctrl.current?.destroy?.()
+      ctrl.current = null
+    }
+    /* the embed is created once for the life of the panel */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tracks.length])
+
+  /* tell the room which sleeve to take its colour from */
+  useEffect(() => {
+    if (!track) return
+    let dead = false
+    setPlayback({ track })
+    if (!track.art) return
+    dominantColour(track.art).then((tint) => {
+      if (!dead && tint) setPlayback({ track: { ...track, tint } })
+    })
+    return () => {
+      dead = true
+    }
+  }, [track])
+
+  const cue = (i) => {
+    setCued(i)
+    ctrl.current?.loadUri(tracks[i].uri)
+  }
+
+  if (!tracks.length) {
+    return (
+      <div className="records">
+        <p className="sub">{s.subtitle}</p>
+        <p className="records-empty">
+          Nothing baked in yet. Run <code>npm run spotify:auth</code> once, then{' '}
+          <code>npm run spotify</code>, and this fills with what I have actually been playing.
+        </p>
+        {s.groups.map((g) => (
+          <section key={g.heading} className="group">
+            <h3>{g.heading}</h3>
+            <ul className="items">
+              {g.items.map((it) => (
+                <li key={it.name}>
+                  <div className="row">
+                    <span className="name">{it.name}</span>
+                    {it.meta && <span className="meta">{it.meta}</span>}
+                  </div>
+                  {it.body && <p>{it.body}</p>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <div className="records">
+      <p className="sub">{s.subtitle}</p>
+
+      {/*
+        Spotify's controller REPLACES the element it is handed with an
+        iframe, so React must not own that node — it would try to remove a
+        child that is no longer there on unmount. React owns the wrapper and
+        Spotify gets the throwaway inside it.
+      */}
+      <div className="embed">
+        <div ref={host} />
+      </div>
+
+      <ol className="tracklist">
+        {tracks.map((t, i) => (
+          <li key={t.id} className={i === cued ? 'on' : ''}>
+            <button onClick={() => cue(i)}>
+              <span className="n">{String(i + 1).padStart(2, '0')}</span>
+              {t.art ? <img src={t.art} alt="" loading="lazy" /> : <span className="noart" />}
+              <span className="who">
+                <strong>{t.title}</strong>
+                <span>{t.artist}</span>
+              </span>
+              <span className="yr">{t.year}</span>
+            </button>
+          </li>
+        ))}
+      </ol>
+
+      {MUSIC.artists?.length > 0 && (
+        <section className="group">
+          <h3>On heavy rotation</h3>
+          <ul className="items">
+            {MUSIC.artists.map((a) => (
+              <li key={a.name}>
+                <div className="row">
+                  <span className="name">{a.name}</span>
+                  {a.genre && <span className="meta">{a.genre}</span>}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {MUSIC.generated && <p className="records-stamp">Counted up to {MUSIC.generated}.</p>}
+    </div>
   )
 }
 
@@ -470,6 +670,7 @@ const RENDERERS = {
   places: Places,
   notes: Notes,
   writing: Writing,
+  records: Records,
   gallery: Gallery,
   player: Player,
   drawer: DrawerPanel,

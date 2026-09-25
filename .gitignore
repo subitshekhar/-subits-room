@@ -12,3 +12,6 @@ dist
 /places-map.svg
 /dslr
 /Liverpool-Logo-Football-Club-Soccer-Team.webp
+
+# spotify credentials — never committed
+.env.local

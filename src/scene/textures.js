@@ -278,12 +278,16 @@ export function createRoomShade({ edges = [], strength = 0.5, spread = 0.34, siz
 }
 
 /* -------------------------------------------- framed vinyl, for MUSIC ---- */
-export function createVinylArt() {
-  const S = 1024
+/*
+ * The record used to be painted into the same canvas as its mount board.
+ * It turns now, so it needs its own texture: the board stays put and the
+ * disc spins on top of it. The spindle also moved back to the true centre,
+ * because anything off-axis wobbles the moment the thing rotates.
+ */
+export function createVinylBoard() {
+  const S = 512
   const { canvas, ctx } = surface(S, S)
-  const c = S / 2
 
-  /* the mount board */
   ctx.fillStyle = '#a29081'
   ctx.fillRect(0, 0, S, S)
   const boardShade = ctx.createLinearGradient(0, 0, S, S)
@@ -292,76 +296,103 @@ export function createVinylArt() {
   ctx.fillStyle = boardShade
   ctx.fillRect(0, 0, S, S)
 
-  /* the record sits slightly proud of the board */
-  ctx.save()
-  ctx.shadowColor = 'rgba(0,0,0,0.45)'
-  ctx.shadowBlur = 26
-  ctx.shadowOffsetY = 10
+  /* the shadow the record casts onto the board, which does not rotate */
+  const pool = ctx.createRadialGradient(S / 2, S / 2 + 6, 120, S / 2, S / 2 + 10, 215)
+  pool.addColorStop(0, 'rgba(0,0,0,0.34)')
+  pool.addColorStop(1, 'rgba(0,0,0,0)')
+  ctx.fillStyle = pool
+  ctx.fillRect(0, 0, S, S)
+
+  return finish(canvas)
+}
+
+export function createVinylDisc() {
+  const S = 1024
+  const { canvas, ctx } = surface(S, S)
+  const c = S / 2
+  const R = 502
+
   ctx.fillStyle = '#0b0b0d'
   ctx.beginPath()
-  ctx.arc(c, c, 398, 0, Math.PI * 2)
+  ctx.arc(c, c, R, 0, Math.PI * 2)
   ctx.fill()
-  ctx.restore()
 
   /* grooves */
   ctx.save()
   ctx.beginPath()
-  ctx.arc(c, c, 398, 0, Math.PI * 2)
+  ctx.arc(c, c, R, 0, Math.PI * 2)
   ctx.clip()
-  for (let r = 168; r < 398; r += 3) {
-    ctx.strokeStyle = `rgba(255,255,255,${r % 24 < 3 ? 0.075 : 0.032})`
+  for (let r = 210; r < R; r += 3.8) {
+    ctx.strokeStyle = `rgba(255,255,255,${r % 30 < 3.8 ? 0.075 : 0.032})`
     ctx.lineWidth = 1
     ctx.beginPath()
     ctx.arc(c, c, r, 0, Math.PI * 2)
     ctx.stroke()
   }
 
-  /* the sheen across the disc — what makes vinyl read as vinyl */
-  const sheen = ctx.createLinearGradient(c - 380, c - 380, c + 300, c + 300)
-  sheen.addColorStop(0, 'rgba(255,255,255,0)')
-  sheen.addColorStop(0.34, 'rgba(255,255,255,0.11)')
-  sheen.addColorStop(0.46, 'rgba(255,255,255,0.02)')
-  sheen.addColorStop(0.62, 'rgba(255,255,255,0.09)')
-  sheen.addColorStop(1, 'rgba(255,255,255,0)')
-  ctx.fillStyle = sheen
-  ctx.fillRect(0, 0, S, S)
+  /*
+   * The sheen is the one thing that must NOT turn with the record, or the
+   * highlight chases the disc round and it reads as a painted wheel. It
+   * lives on the glass in front instead — see createVinylSheen.
+   */
   ctx.restore()
 
   /* label */
   ctx.fillStyle = '#efeae0'
   ctx.beginPath()
-  ctx.arc(c, c, 152, 0, Math.PI * 2)
+  ctx.arc(c, c, 191, 0, Math.PI * 2)
   ctx.fill()
 
-  /* the two register marks either side, as on the reference */
   ctx.fillStyle = '#b9b3a8'
-  ctx.fillRect(c - 128, c - 14, 30, 30)
-  ctx.fillRect(c + 98, c - 14, 30, 30)
+  ctx.fillRect(c - 160, c - 18, 38, 38)
+  ctx.fillRect(c + 122, c - 18, 38, 38)
 
   ctx.textAlign = 'center'
   ctx.fillStyle = '#9a9488'
-  ctx.font = '600 22px ui-monospace, Menlo, monospace'
-  ctx.fillText('SIDE A', c, c - 74)
+  ctx.font = '600 27px ui-monospace, Menlo, monospace'
+  ctx.fillText('SIDE A', c, c - 92)
 
   ctx.fillStyle = '#17171a'
-  ctx.font = 'italic 600 62px Georgia, "Times New Roman", serif'
-  ctx.fillText('Music', c, c - 14)
+  ctx.font = 'italic 600 78px Georgia, "Times New Roman", serif'
+  ctx.fillText('Music', c, c - 18)
 
   ctx.fillStyle = '#6f6a61'
-  ctx.font = '400 13px ui-monospace, Menlo, monospace'
-  ctx.fillText('played too many times', c, c + 62)
-  ctx.fillText('· · · · ·', c, c + 88)
-  ctx.font = '400 13px ui-monospace, Menlo, monospace'
-  ctx.fillText('33 ⅓ RPM   ·   PANDA', c, c + 114)
+  ctx.font = '400 16px ui-monospace, Menlo, monospace'
+  ctx.fillText('played too many times', c, c + 78)
+  ctx.fillText('· · · · ·', c, c + 110)
+  ctx.fillText('33 ⅓ RPM   ·   PANDA', c, c + 142)
 
-  /* spindle hole */
-  ctx.fillStyle = '#a29081'
+  /* spindle hole, dead centre this time */
+  ctx.fillStyle = '#6d6054'
   ctx.beginPath()
-  ctx.arc(c, c + 20, 21, 0, Math.PI * 2)
+  ctx.arc(c, c, 26, 0, Math.PI * 2)
   ctx.fill()
-  ctx.strokeStyle = 'rgba(0,0,0,0.3)'
-  ctx.lineWidth = 2
+  ctx.strokeStyle = 'rgba(0,0,0,0.35)'
+  ctx.lineWidth = 3
   ctx.stroke()
+
+  return finish(canvas)
+}
+
+/* The fixed highlight, laid over the turning disc so it stays put. */
+export function createVinylSheen() {
+  const S = 512
+  const { canvas, ctx } = surface(S, S)
+  const c = S / 2
+
+  ctx.save()
+  ctx.beginPath()
+  ctx.arc(c, c, 250, 0, Math.PI * 2)
+  ctx.clip()
+  const sheen = ctx.createLinearGradient(c - 240, c - 240, c + 190, c + 190)
+  sheen.addColorStop(0, 'rgba(255,255,255,0)')
+  sheen.addColorStop(0.34, 'rgba(255,255,255,0.13)')
+  sheen.addColorStop(0.46, 'rgba(255,255,255,0.02)')
+  sheen.addColorStop(0.62, 'rgba(255,255,255,0.10)')
+  sheen.addColorStop(1, 'rgba(255,255,255,0)')
+  ctx.fillStyle = sheen
+  ctx.fillRect(0, 0, S, S)
+  ctx.restore()
 
   return finish(canvas)
 }

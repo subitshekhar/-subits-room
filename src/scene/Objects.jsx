@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFrame, useLoader } from '@react-three/fiber'
 import { Billboard, Html, RoundedBox } from '@react-three/drei'
 import {
@@ -17,6 +17,7 @@ import { P } from './palette.js'
 import Hotspot from './Hotspot.jsx'
 import GroundBlob from './GroundBlob.jsx'
 import { DECOR, NO_HIT } from './decor.js'
+import { readPlayback, usePlayback } from '../playback.js'
 import { createBeamFade, createGlow } from './textures.js'
 import { useRoom } from '../roomContext.jsx'
 import { FOCUS } from './focus.js'
@@ -28,7 +29,9 @@ import {
   REEL,
   createSteam,
   createTvReel,
-  createVinylArt,
+  createVinylBoard,
+  createVinylDisc,
+  createVinylSheen,
 } from './textures.js'
 import { SECTIONS } from '../content.js'
 
@@ -977,8 +980,96 @@ function SalahFrame() {
   )
 }
 
+/*
+ * A vertical turntable, not a picture of one. The disc is its own mesh so it
+ * can turn; the board and the sheen stay put behind and in front of it,
+ * because a highlight that chases the record round reads as a painted wheel.
+ *
+ * It spins while the embed in the MUSIC panel is actually making sound, so
+ * the needle is telling the truth rather than decorating.
+ */
+const RPM = (33 + 1 / 3) / 60 /* turns per second */
+const DISC_R = 0.28
+const ARM_L = 0.3
+/*
+ * The arm hangs straight down from its pivot at rotation 0. These two are
+ * the angles that put the needle on the outer groove and clear of the disc
+ * respectively — worked out from the pivot position and ARM_L rather than
+ * guessed, because a needle parked on the label looks broken.
+ */
+const ARM_PLAYING = -0.1
+const ARM_PARKED = 0.16
+/* the cue lever: the arm rides above the disc until the needle goes down */
+const ARM_Z_PLAYING = 0.026
+const ARM_Z_PARKED = 0.042
+/*
+ * The label is 191px of the 502px the disc art is drawn at, so this is where
+ * the sleeve has to land to sit exactly on the printed label beneath it.
+ */
+const LABEL_R = DISC_R * (191 / 502)
+
+/* Loads a sleeve off our own origin. Null url means fall back to the
+ * printed label, which is what the record shows when nothing is cued. */
+function useSleeve(url) {
+  const [tex, setTex] = useState(null)
+  useEffect(() => {
+    if (!url) {
+      setTex(null)
+      return
+    }
+    let dead = false
+    new TextureLoader().load(url, (t) => {
+      if (dead) return t.dispose()
+      t.colorSpace = SRGBColorSpace
+      setTex(t)
+    })
+    return () => {
+      dead = true
+    }
+  }, [url])
+  /* the previous sleeve goes back to the GPU when it is replaced */
+  useEffect(() => () => tex?.dispose(), [tex])
+  return tex
+}
+
 function VinylFrame() {
-  const art = useMemo(() => createVinylArt(), [])
+  const board = useMemo(() => createVinylBoard(), [])
+  const disc = useMemo(() => createVinylDisc(), [])
+  const sheen = useMemo(() => createVinylSheen(), [])
+
+  const { track } = usePlayback()
+  const sleeve = useSleeve(track?.art ?? null)
+
+  const spin = useRef()
+  const arm = useRef()
+  const wash = useRef()
+  /* eased towards 1 while playing, 0 while not, so the record runs up to
+   * speed and coasts down instead of snapping between states */
+  const drive = useRef(0)
+
+  useFrame((_, dt) => {
+    const { playing, track } = readPlayback()
+
+    const target = playing ? 1 : 0
+    /* a real platter takes about a second to settle either way */
+    drive.current += (target - drive.current) * Math.min(1, dt * 2.2)
+    if (drive.current < 0.0005) drive.current = 0
+
+    if (spin.current) spin.current.rotation.z -= RPM * Math.PI * 2 * drive.current * dt
+    if (arm.current) {
+      const k = Math.min(1, dt * 3)
+      const want = playing ? ARM_PLAYING : ARM_PARKED
+      arm.current.rotation.z += (want - arm.current.rotation.z) * k
+      const z = playing ? ARM_Z_PLAYING : ARM_Z_PARKED
+      arm.current.position.z += (z - arm.current.position.z) * k
+    }
+    if (wash.current) {
+      wash.current.intensity = drive.current * 1.5
+      const c = track?.tint
+      if (c) wash.current.color.set(c)
+    }
+  })
+
   return (
     <Hotspot
       id="music"
@@ -988,10 +1079,70 @@ function VinylFrame() {
       rotation={[0, Math.PI / 2, 0]}
     >
       <PictureFrame w={0.95} h={0.95}>
-        <mesh position={[0, 0, 0.015]}>
+        {/* mount board */}
+        <mesh position={[0, 0, 0.012]}>
           <planeGeometry args={[0.83, 0.83]} />
-          <Art map={art} />
+          <Art map={board} />
         </mesh>
+
+        {/* the record */}
+        <group ref={spin} position={[0, 0, 0.016]}>
+          <mesh>
+            <circleGeometry args={[DISC_R, 64]} />
+            <meshStandardMaterial map={disc} roughness={0.34} metalness={0.06} />
+          </mesh>
+          {/*
+            The sleeve of whatever is cued, sitting on the label and turning
+            with it. A square cover through a circle geometry is centre
+            cropped, which is what you want on a record anyway.
+          */}
+          {sleeve && (
+            <mesh position={[0, 0, 0.0012]}>
+              <circleGeometry args={[LABEL_R, 48]} />
+              <meshStandardMaterial map={sleeve} roughness={0.46} metalness={0.04} />
+            </mesh>
+          )}
+        </group>
+
+        {/* fixed highlight across the disc */}
+        <mesh position={[0, 0, 0.018]}>
+          <circleGeometry args={[DISC_R, 64]} />
+          <meshBasicMaterial map={sheen} transparent opacity={0.85} depthWrite={false} />
+        </mesh>
+
+        {/* spindle */}
+        <mesh position={[0, 0, 0.019]}>
+          <circleGeometry args={[0.008, 16]} />
+          <meshStandardMaterial color="#6d6054" roughness={0.6} />
+        </mesh>
+
+        {/*
+          Tonearm. It hangs straight down the -Y axis from a pivot up and to
+          the right, so the whole drop is one rotation about Z.
+        */}
+        <group ref={arm} position={[0.3, 0.27, ARM_Z_PARKED]} rotation={[0, 0, ARM_PARKED]}>
+          {/* pivot housing */}
+          <mesh rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.022, 0.024, 0.018, 16]} />
+            <meshStandardMaterial color="#2b2b30" roughness={0.45} metalness={0.35} />
+          </mesh>
+          {/* counterweight, behind the pivot */}
+          <mesh position={[0, 0.042, 0]} rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.016, 0.016, 0.026, 14]} />
+            <meshStandardMaterial color="#1e1e22" roughness={0.5} metalness={0.3} />
+          </mesh>
+          {/* the tube */}
+          <mesh position={[0, -ARM_L / 2, 0]}>
+            <cylinderGeometry args={[0.005, 0.005, ARM_L, 12]} />
+            <meshStandardMaterial color="#b8b3ad" roughness={0.3} metalness={0.45} />
+          </mesh>
+          {/* headshell, canted the way a real one is */}
+          <mesh position={[0, -ARM_L - 0.012, 0]} rotation={[0, 0, 0.35]}>
+            <boxGeometry args={[0.03, 0.036, 0.016]} />
+            <meshStandardMaterial color="#26262a" roughness={0.5} />
+          </mesh>
+        </group>
+
       </PictureFrame>
     </Hotspot>
   )
