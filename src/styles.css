@@ -144,6 +144,14 @@ canvas { display: block; touch-action: none; }
   transition: transform 0.16s ease, border-color 0.16s ease;
 }
 .ghost:hover { transform: translateY(-1px); border-color: var(--accent); }
+.ghost.icon {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+}
+.ghost.icon svg { width: 17px; height: 17px; }
 
 /* ---------------------------------------------------------- the index --- */
 .hud.index {
@@ -233,7 +241,7 @@ canvas { display: block; touch-action: none; }
 .hud.bottom {
   bottom: 0; left: 0; right: 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   padding: 20px 26px;
   font-family: var(--mono);
@@ -241,10 +249,8 @@ canvas { display: block; touch-action: none; }
   letter-spacing: 0.05em;
   color: var(--ink-soft);
 }
+/* the hint has the left of the footer; the orbit holds the right */
 .hint { opacity: 0.95; }
-.socials { display: flex; gap: 14px; }
-.socials a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--line); }
-.socials a:hover { color: var(--accent); border-color: var(--accent); }
 
 /* ------------------------------------------------- floating hover tag --- */
 .tag {
@@ -822,7 +828,6 @@ ul.ticks.next li::before { background: none; border: 1px solid var(--accent); }
     max-height: 62vh;
   }
   .panel.kind-drawer { width: auto; }
-  .hud.bottom .socials { display: none; }
   .brand { font-size: 24px; }
   .tiles, .two-col, .facts, .shots { grid-template-columns: 1fr; }
 }
@@ -1098,4 +1103,142 @@ ul.ticks.next li::before { background: none; border: 1px solid var(--accent); }
 
 @media (max-width: 900px) {
   .sheets { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* -------------------------------------------------------- orbit menu --- */
+/*
+ * One button that fans three out along a quarter circle. The items are
+ * placed with per-item --x/--y set from the same polar maths that draws the
+ * guide, so the buttons and the dashed arc cannot drift apart.
+ */
+.orbit {
+  position: fixed;
+  right: 26px;
+  bottom: 18px;
+  z-index: 12;
+  width: 44px;
+  height: 44px;
+}
+.orbit ul { list-style: none; margin: 0; padding: 0; }
+
+.orbit li {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 44px;
+  height: 44px;
+  /* collapsed: sitting under the trigger, small and invisible */
+  transform: translate(0, 0) scale(0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.22s ease;
+  /* closing runs in reverse, so the last one out is the first one back */
+  transition-delay: calc((2 - var(--i)) * 45ms);
+}
+.orbit.is-open li {
+  transform: translate(var(--x), var(--y)) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: calc(var(--i) * 55ms);
+}
+
+.orbit li a {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 22px -10px rgba(0, 0, 0, 0.7);
+  transition: color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+.orbit li a svg { width: 18px; height: 18px; }
+.orbit li a:hover { color: var(--accent); border-color: var(--accent); transform: scale(1.1); }
+
+/* the name, which only appears for the one you are pointing at */
+.orbit-label {
+  position: absolute;
+  left: 50%;
+  bottom: -22px;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  white-space: nowrap;
+  color: var(--ink-soft);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  pointer-events: none;
+}
+.orbit li a:hover .orbit-label { opacity: 1; }
+
+/* the dashed guide, drawn on as the buttons travel out along it */
+.orbit-arc {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+.orbit-arc path {
+  stroke: var(--line);
+  stroke-width: 1.4;
+  stroke-dasharray: 3 6;
+  stroke-dashoffset: 150;
+  opacity: 0;
+  transition: stroke-dashoffset 0.6s ease, opacity 0.3s ease;
+}
+.orbit.is-open .orbit-arc path { stroke-dashoffset: 0; opacity: 1; }
+
+/*
+ * The trigger is a pill rather than a circle because the face is wider than
+ * it is tall. It is pinned to the centre of the 44px box the geometry is
+ * measured from, so it can change size without moving the arc or the items.
+ */
+.orbit-trigger {
+  position: absolute;
+  left: 22px;
+  top: 22px;
+  transform: translate(-50%, -50%);
+  width: 68px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 22px -10px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+  transition: transform 0.34s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease;
+}
+.orbit-trigger:hover { transform: translate(-50%, -50%) scale(1.06); border-color: var(--accent); }
+.orbit.is-open .orbit-trigger { border-color: var(--accent); }
+
+.orbit-trigger .face {
+  /* Kannada plus the undertie. Named explicitly because the body stack has
+   * no Indic face, and a miss here renders as tofu rather than a fallback. */
+  font-family: 'Kannada MN', 'Nirmala UI', 'Noto Sans Kannada', 'Noto Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  transition: color 0.2s ease;
+  /* the glyphs sit high in their em box; this drops them onto the optical
+   * centre of the pill */
+  transform: translateY(1px);
+}
+.orbit.is-open .orbit-trigger .face { color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit li,
+  .orbit-trigger,
+  .orbit-arc path {
+    transition-duration: 0.01ms;
+  }
 }
