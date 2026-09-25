@@ -124,43 +124,51 @@
   ],
   "artists": [
     {
+      "id": "20tfEk8GA9lO1i0cZsslKS",
       "name": "KhoslaRaghu",
-      "genre": "hindi indie",
+      "photo": "/artist/20tfEk8GA9lO1i0cZsslKS.jpg",
       "url": "https://open.spotify.com/artist/20tfEk8GA9lO1i0cZsslKS"
     },
     {
+      "id": "68l0QuZV2CAaQqXP4o75fn",
       "name": "Pineapple Express",
-      "genre": "indian indie",
+      "photo": "/artist/68l0QuZV2CAaQqXP4o75fn.jpg",
       "url": "https://open.spotify.com/artist/68l0QuZV2CAaQqXP4o75fn"
     },
     {
+      "id": "2yE29no7fHNeyPRIIiwaJ4",
       "name": "Fuzon",
-      "genre": "sufi",
+      "photo": "/artist/2yE29no7fHNeyPRIIiwaJ4.jpg",
       "url": "https://open.spotify.com/artist/2yE29no7fHNeyPRIIiwaJ4"
     },
     {
+      "id": "3atMq790wQ7IqjeSO0HFeP",
       "name": "Bayaan",
-      "genre": "indian indie",
+      "photo": "/artist/3atMq790wQ7IqjeSO0HFeP.jpg",
       "url": "https://open.spotify.com/artist/3atMq790wQ7IqjeSO0HFeP"
     },
     {
+      "id": "740SYcL7Hl2TatDM2wYV8V",
       "name": "Swastik The Band",
-      "genre": "indian indie",
+      "photo": "/artist/740SYcL7Hl2TatDM2wYV8V.jpg",
       "url": "https://open.spotify.com/artist/740SYcL7Hl2TatDM2wYV8V"
     },
     {
+      "id": "7xLQxBMXlCJT50jWVZfSME",
       "name": "sudan",
-      "genre": "indian indie",
+      "photo": "/artist/7xLQxBMXlCJT50jWVZfSME.jpg",
       "url": "https://open.spotify.com/artist/7xLQxBMXlCJT50jWVZfSME"
     },
     {
+      "id": "0dXhihFK6rCZyag11hWJ2B",
       "name": "Vidhya Gopal",
-      "genre": "indian indie",
+      "photo": "/artist/0dXhihFK6rCZyag11hWJ2B.jpg",
       "url": "https://open.spotify.com/artist/0dXhihFK6rCZyag11hWJ2B"
     },
     {
+      "id": "3K1oloNu09kQTV0Idz378q",
       "name": "aswekeepsearching",
-      "genre": "indian indie",
+      "photo": "/artist/3K1oloNu09kQTV0Idz378q.jpg",
       "url": "https://open.spotify.com/artist/3K1oloNu09kQTV0Idz378q"
     }
   ]

@@ -433,18 +433,25 @@ function Records({ s }) {
       </ol>
 
       {MUSIC.artists?.length > 0 && (
-        <section className="group">
+        <section className="rotation">
           <h3>On heavy rotation</h3>
-          <ul className="items">
-            {MUSIC.artists.map((a) => (
-              <li key={a.name}>
-                <div className="row">
-                  <span className="name">{a.name}</span>
-                  {a.genre && <span className="meta">{a.genre}</span>}
-                </div>
+          {/*
+            Ordered by how much they actually got played, which is the only
+            thing this endpoint still tells us — Spotify stopped sending
+            genres, so the rank carries the meaning now.
+          */}
+          <ol className="faces">
+            {MUSIC.artists.map((a, i) => (
+              <li key={a.id ?? a.name}>
+                <a href={a.url} target="_blank" rel="noreferrer">
+                  {a.photo ? <img src={a.photo} alt="" loading="lazy" /> : <span className="noart" />}
+                  <span className="scrim" />
+                  <span className="rank">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="who">{a.name}</span>
+                </a>
               </li>
             ))}
-          </ul>
+          </ol>
         </section>
       )}
 

@@ -15,6 +15,7 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const ART_DIR = join(ROOT, 'public/album')
+const ARTIST_DIR = join(ROOT, 'public/artist')
 const OUT = join(ROOT, 'src/music.json')
 
 const TRACKS = 12
@@ -114,19 +115,36 @@ for (const t of topTracks.items) {
   })
 }
 
-const artists = topArtists.items.map((a) => ({
-  name: a.name,
-  genre: (a.genres ?? [])[0] ?? '',
-  url: a.external_urls.spotify,
-}))
+/*
+ * Artists come back with images, a name and a link, and nothing else —
+ * Spotify stopped sending `genres`, `popularity` and `followers` on this
+ * endpoint, so there is no point storing a field that arrives empty. The
+ * order is the useful part: it is how much you actually played them.
+ */
+mkdirSync(ARTIST_DIR, { recursive: true })
 
-/* drop sleeves for tracks that have fallen off the list */
-const keep = new Set(tracks.map((t) => `${t.id}.jpg`))
-if (existsSync(ART_DIR)) {
-  for (const f of readdirSync(ART_DIR)) {
-    if (f.endsWith('.jpg') && !keep.has(f)) unlinkSync(join(ART_DIR, f))
+const artists = []
+for (const a of topArtists.items) {
+  const photo = pickArt(a.images)
+  const file = `${a.id}.jpg`
+  if (photo) await download(photo, join(ARTIST_DIR, file))
+  artists.push({
+    id: a.id,
+    name: a.name,
+    photo: photo ? `/artist/${file}` : null,
+    url: a.external_urls.spotify,
+  })
+}
+
+/* drop images for anyone who has fallen off either list */
+const prune = (dir, keep) => {
+  if (!existsSync(dir)) return
+  for (const f of readdirSync(dir)) {
+    if (f.endsWith('.jpg') && !keep.has(f)) unlinkSync(join(dir, f))
   }
 }
+prune(ART_DIR, new Set(tracks.map((t) => `${t.id}.jpg`)))
+prune(ARTIST_DIR, new Set(artists.map((a) => `${a.id}.jpg`)))
 
 writeFileSync(
   OUT,
@@ -134,4 +152,4 @@ writeFileSync(
 )
 
 console.log(`wrote src/music.json — ${tracks.length} tracks, ${artists.length} artists`)
-console.log(`sleeves in public/album/ — commit those too`)
+console.log(`images in public/album/ and public/artist/ — commit those too`)
