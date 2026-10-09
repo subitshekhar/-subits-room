@@ -3,6 +3,13 @@ import { Canvas } from '@react-three/fiber'
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei'
 import { EffectComposer, Outline, Selection } from '@react-three/postprocessing'
 import { BlendFunction } from 'postprocessing'
+/*
+ * The react entry point, not the next one: that build imports
+ * next/navigation to read the route, and there is no Next.js here. It is a
+ * Vite app, so routing is not a thing and the plain react component is the
+ * one that resolves.
+ */
+import { Analytics } from '@vercel/analytics/react'
 import { RoomContext } from './roomContext.jsx'
 import { HOME } from './room.js'
 import { MOODS } from './scene/palette.js'
@@ -145,6 +152,8 @@ export default function App() {
       />
 
       {active && <Panel id={active} night={night} onClose={reset} />}
+
+      <Analytics />
     </div>
   )
 }
