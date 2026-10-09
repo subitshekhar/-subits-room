@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber'
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei'
 import { EffectComposer, Outline, Selection } from '@react-three/postprocessing'
 import { BlendFunction } from 'postprocessing'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import { RoomContext } from './roomContext.jsx'
 import { HOME } from './room.js'
 import { MOODS } from './scene/palette.js'
@@ -145,6 +146,8 @@ export default function App() {
       />
 
       {active && <Panel id={active} night={night} onClose={reset} />}
+      
+      <SpeedInsights />
     </div>
   )
 }
