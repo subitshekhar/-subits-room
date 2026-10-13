@@ -5,6 +5,8 @@ import { SECTIONS } from '../content.js'
 import { setPlayback } from '../playback.js'
 import MUSIC from '../music.json'
 import WATCH from '../watch.json'
+import BOOKS from '../books.json'
+import POKEMON from '../pokemon.json'
 
 /* --------------------------------------------------- laptop: PANDA_OS --- */
 
@@ -219,6 +221,108 @@ function Places({ s }) {
         </section>
       </div>
     </>
+  )
+}
+
+/* ------------------------------------------------------------ pokedex --- */
+
+function Pokedex({ s }) {
+  const baked = useMemo(() => new Map((POKEMON.list ?? []).map((p) => [p.q, p])), [])
+  const items = s.favourites.map((f) => ({ ...baked.get(f.name), ...f }))
+  const anyArt = items.some((p) => p.art)
+
+  return (
+    <div className="pokedex">
+      <p className="sub">{s.subtitle}</p>
+
+      {!anyArt && (
+        <p className="records-empty">
+          Nothing fetched yet. Run <code>npm run pokemon</code> and these fill in from PokéAPI.
+        </p>
+      )}
+
+      <ul className="dex">
+        {items.map((p) => (
+          <li key={p.name} data-type={p.types?.[0] ?? 'normal'}>
+            <Wrap href={p.url}>
+              <span className="plate">
+                {p.art ? <img src={p.art} alt="" /> : <span className="num">?</span>}
+              </span>
+            </Wrap>
+            <div className="dex-meta">
+              <strong>{p.name}</strong>
+              {p.id && <span className="num">#{String(p.id).padStart(4, '0')}</span>}
+              {p.types && (
+                <span className="types">
+                  {p.types.map((t) => (
+                    <em key={t} data-type={t}>
+                      {t}
+                    </em>
+                  ))}
+                </span>
+              )}
+              {p.note && <p className="mine">{p.note}</p>}
+              {p.dex && <p className="dex-text">{p.dex}</p>}
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      {POKEMON.generated && <p className="records-stamp">Fetched {POKEMON.generated}.</p>}
+    </div>
+  )
+}
+
+/* -------------------------------------------------------------- shelf --- */
+
+/*
+ * The shelf, with jackets. The groups and their order come from content.js
+ * and the cover art is looked up by title, so adding a book is still a
+ * one-line edit — `npm run books` catches the picture up afterwards.
+ */
+function Shelf({ s }) {
+  const byTitle = useMemo(() => new Map((BOOKS.books ?? []).map((b) => [b.q, b])), [])
+  const anyArt = (BOOKS.books ?? []).some((b) => b.cover)
+
+  return (
+    <div className="shelf">
+      <p className="sub">{s.subtitle}</p>
+
+      {!anyArt && (
+        <p className="records-empty">
+          No jackets yet. Run <code>npm run books</code> and these fill in from Open Library.
+        </p>
+      )}
+
+      {s.groups.map((g) => (
+        <section key={g.heading} className="shelf-group">
+          <h3>{g.heading}</h3>
+          <ul className="jackets">
+            {g.items.map((it) => {
+              const b = byTitle.get(it.name) ?? {}
+              return (
+                <li key={it.name}>
+                  <Wrap href={b.url}>
+                    {b.cover ? (
+                      <img src={b.cover} alt="" />
+                    ) : (
+                      <span className="placeholder">{it.name}</span>
+                    )}
+                  </Wrap>
+                  <div className="jacket-meta">
+                    <strong>{it.name}</strong>
+                    <span>{it.meta || b.author}</span>
+                    {it.body && <p>{it.body}</p>}
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+        </section>
+      ))}
+
+      {BOOKS.generated && <p className="records-stamp">Jackets pulled {BOOKS.generated}.</p>}
+    </div>
   )
 }
 
@@ -782,6 +886,8 @@ const RENDERERS = {
   places: Places,
   notes: Notes,
   writing: Writing,
+  pokedex: Pokedex,
+  shelf: Shelf,
   posters: Posters,
   records: Records,
   gallery: Gallery,

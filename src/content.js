@@ -125,7 +125,7 @@ export const SECTIONS = {
     hotspot: 'Bookshelf',
     nav: 'BOOKS',
     title: 'BOOKS',
-    kind: 'list',
+    kind: 'shelf',
     subtitle: 'Currently reading, recently finished, permanently unfinished.',
     groups: [
       {
@@ -224,32 +224,24 @@ export const SECTIONS = {
     ],
   },
 
-  /* ----------------------------------- CAR SHELF + HELMET → MACHINES ----- */
-  machines: {
+  /* ------------------------------------ POKE BALL ON THE SHELF → POKEMON - */
+  pokemon: {
     /* in the room, not in the index */
     listed: false,
-    kind: 'list',
-    hotspot: 'Model car',
-    nav: 'MACHINES',
-    title: 'MACHINES',
-    subtitle: 'Things that move, and the engineering that makes them move.',
-    groups: [
-      {
-        heading: 'The shelf',
-        items: [
-          { name: 'Ayrton Senna — MP4/4', meta: '1:43', body: 'The one I would save in a fire.' },
-          { name: 'Lancia Delta Integrale', meta: '1:43', body: 'Group B hangover, rally hero.' },
-          { name: 'Add the rest', meta: '', body: 'This shelf only grows.' },
-        ],
-      },
-      {
-        heading: 'Fascinated by',
-        items: [
-          { name: 'Naturally aspirated engines', meta: '', body: 'An endangered species.' },
-          { name: 'Motorcycle dynamics', meta: '', body: 'Countersteering still feels like a bug in physics.' },
-          { name: 'F1 aero', meta: '', body: 'Ground effect is just plumbing with a budget.' },
-        ],
-      },
+    kind: 'pokedex',
+    hotspot: 'Poke Ball',
+    nav: 'POKEMON',
+    title: 'THE SIX I WOULD PICK',
+    subtitle: 'No justification offered.',
+    /* `tools/fetch-pokemon.mjs` fills src/pokemon.json from these. `name` is
+     * the PokeAPI slug; `note` is yours and is never overwritten. */
+    favourites: [
+      { name: 'charizard', note: 'The first one I ever cared about.' },
+      { name: 'gengar', note: 'Ghost that grins at you.' },
+      { name: 'lucario', note: '' },
+      { name: 'snorlax', note: 'Aspirational.' },
+      { name: 'umbreon', note: 'The best Eeveelution and it is not close.' },
+      { name: 'dragonite', note: 'Enormous and somehow gentle.' },
     ],
   },
 

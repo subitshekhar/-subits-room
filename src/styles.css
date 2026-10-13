@@ -1242,3 +1242,181 @@ ul.ticks.next li::before { background: none; border: 1px solid var(--accent); }
     transition-duration: 0.01ms;
   }
 }
+
+/* -------------------------------------------------------------- shelf --- */
+.shelf-group { margin: 0 0 26px; }
+.shelf-group h3 {
+  margin: 0 0 12px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.jackets {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px 20px;
+}
+.jackets li { display: flex; gap: 13px; min-width: 0; }
+
+/* the jacket itself: a real book has a spine edge and sits on the page */
+.jackets a,
+.jackets > li > div:first-child {
+  flex: none;
+  width: 62px;
+  display: block;
+  position: relative;
+  aspect-ratio: 2 / 3;
+  border-radius: 2px 3px 3px 2px;
+  overflow: hidden;
+  text-decoration: none;
+  background: var(--line);
+  box-shadow: 0 7px 18px -8px rgba(0, 0, 0, 0.75);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.jackets a:hover { transform: translateY(-3px); box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.8); }
+/* Jackets come back anywhere from 1.22 to 1.64 aspect while the tiles are a
+ * fixed 2:3. Anchoring the crop to the top keeps the title, which is at the
+ * top of almost every cover ever printed; centring it would cut into it. */
+.jackets img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+/* the darker strip down the left edge reads as the spine */
+.jackets a::after,
+.jackets > li > div:first-child::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 5px;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0.06));
+  pointer-events: none;
+}
+.jackets .placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 8px 7px 8px 10px;
+  font-family: var(--serif);
+  font-size: 11px;
+  line-height: 1.2;
+  color: var(--ink-soft);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.07), rgba(0, 0, 0, 0.28));
+}
+
+.jacket-meta { min-width: 0; padding-top: 2px; }
+.jacket-meta strong {
+  display: block;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.25;
+}
+.jacket-meta > span {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+.jacket-meta p { margin: 7px 0 0 !important; font-size: 12px; line-height: 1.45; color: var(--ink-soft); }
+
+@media (max-width: 900px) {
+  .jackets { grid-template-columns: 1fr; }
+}
+
+/* ------------------------------------------------------------ pokedex --- */
+/*
+ * The eighteen type colours are the one piece of visual grammar every player
+ * already knows, so the tile takes its wash from the primary type rather
+ * than from the room's palette.
+ */
+.dex {
+  --t: #a8a77a;
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+.dex li[data-type='fire'], .dex em[data-type='fire'] { --t: #ee8130; }
+.dex li[data-type='water'], .dex em[data-type='water'] { --t: #6390f0; }
+.dex li[data-type='grass'], .dex em[data-type='grass'] { --t: #7ac74c; }
+.dex li[data-type='electric'], .dex em[data-type='electric'] { --t: #f7d02c; }
+.dex li[data-type='psychic'], .dex em[data-type='psychic'] { --t: #f95587; }
+.dex li[data-type='ice'], .dex em[data-type='ice'] { --t: #96d9d6; }
+.dex li[data-type='dragon'], .dex em[data-type='dragon'] { --t: #6f35fc; }
+.dex li[data-type='dark'], .dex em[data-type='dark'] { --t: #705746; }
+.dex li[data-type='fairy'], .dex em[data-type='fairy'] { --t: #d685ad; }
+.dex li[data-type='fighting'], .dex em[data-type='fighting'] { --t: #c22e28; }
+.dex li[data-type='flying'], .dex em[data-type='flying'] { --t: #a98ff3; }
+.dex li[data-type='poison'], .dex em[data-type='poison'] { --t: #a33ea1; }
+.dex li[data-type='ground'], .dex em[data-type='ground'] { --t: #e2bf65; }
+.dex li[data-type='rock'], .dex em[data-type='rock'] { --t: #b6a136; }
+.dex li[data-type='bug'], .dex em[data-type='bug'] { --t: #a6b91a; }
+.dex li[data-type='ghost'], .dex em[data-type='ghost'] { --t: #735797; }
+.dex li[data-type='steel'], .dex em[data-type='steel'] { --t: #b7b7ce; }
+
+.dex li { display: flex; gap: 14px; align-items: flex-start; }
+
+.dex a, .dex > li > div:first-child { flex: none; text-decoration: none; }
+.plate {
+  width: 88px;
+  height: 88px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  /* the type colour, dialled right down so it tints rather than shouts */
+  background:
+    radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--t) 34%, transparent), transparent 68%),
+    color-mix(in srgb, var(--t) 11%, var(--paper));
+  border: 1px solid color-mix(in srgb, var(--t) 34%, transparent);
+  transition: transform 0.22s ease, border-color 0.22s ease;
+}
+.dex a:hover .plate { transform: translateY(-3px) scale(1.03); border-color: var(--t); }
+.plate img { width: 78px; height: 78px; object-fit: contain; display: block; }
+
+.dex-meta { min-width: 0; padding-top: 3px; }
+.dex-meta strong {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 17px;
+  text-transform: capitalize;
+}
+.dex-meta .num {
+  margin-left: 7px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--ink-soft);
+}
+.types { display: inline-flex; gap: 5px; margin-left: 8px; vertical-align: 2px; }
+.types em {
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 8.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 999px;
+  color: color-mix(in srgb, var(--t) 72%, var(--ink));
+  background: color-mix(in srgb, var(--t) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--t) 36%, transparent);
+}
+.dex-meta .mine { margin: 7px 0 0 !important; font-size: 13px; color: var(--ink); }
+.dex-meta .dex-text {
+  margin: 5px 0 0 !important;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  font-style: italic;
+}

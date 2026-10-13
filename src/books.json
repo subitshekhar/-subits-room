@@ -1,0 +1,61 @@
+{
+  "generated": "2026-10-13",
+  "books": [
+    {
+      "q": "Meditations",
+      "title": "Meditations",
+      "author": "Marcus Aurelius",
+      "year": "1626",
+      "cover": "/cover/211529.jpg",
+      "url": "https://openlibrary.org/works/OL1317211W"
+    },
+    {
+      "q": "The Myth of Sisyphus",
+      "title": "The Myth of Sisyphus and Other Essays",
+      "author": "Albert Camus",
+      "year": "1955",
+      "cover": "/cover/12726570.jpg",
+      "url": "https://openlibrary.org/works/OL1230690W"
+    },
+    {
+      "q": "Thinking, Fast and Slow",
+      "title": "Thinking, fast and slow",
+      "author": "Daniel Kahneman",
+      "year": "2011",
+      "cover": "/cover/13290711.jpg",
+      "url": "https://openlibrary.org/works/OL15992072W"
+    },
+    {
+      "q": "The Body Keeps the Score",
+      "title": "The Body Keeps the Score",
+      "author": "Bessel van der Kolk",
+      "year": "2014",
+      "cover": "/cover/8315367.jpg",
+      "url": "https://openlibrary.org/works/OL18147687W"
+    },
+    {
+      "q": "Gödel, Escher, Bach",
+      "title": "Gödel, Escher, Bach",
+      "author": "Douglas R. Hofstadter",
+      "year": "1979",
+      "cover": "/cover/14368453.jpg",
+      "url": "https://openlibrary.org/works/OL716850W"
+    },
+    {
+      "q": "Linear Algebra Done Right",
+      "title": "Linear Algebra Done Right",
+      "author": "Sheldon Jay Axler",
+      "year": "2004",
+      "cover": "/cover/246056.jpg",
+      "url": "https://openlibrary.org/works/OL8059441W"
+    },
+    {
+      "q": "Blindsight",
+      "title": "Blindsight",
+      "author": "Peter Watts",
+      "year": "2006",
+      "cover": "/cover/524560.jpg",
+      "url": "https://openlibrary.org/works/OL8514692W"
+    }
+  ]
+}

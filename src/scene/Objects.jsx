@@ -1570,29 +1570,74 @@ function Dslr() {
   )
 }
 
-function ModelCar() {
+/*
+ * A Poke Ball on its stand. Two hemispheres rather than a sphere with a
+ * painted texture: the seam has to be a real edge or it reads as a beach
+ * ball, and the band needs thickness to catch the light the same way.
+ *
+ * three's sphereGeometry takes a phi start and length, so the top and the
+ * bottom are the same call with the sweep split at the equator.
+ */
+const BALL_R = 0.105
+
+function PokeBall() {
+  const { hovered } = useRoom()
+  const lit = hovered === 'pokemon'
+
   return (
     <Hotspot
-      id="machines"
-      focus={FOCUS.machines}
+      id="pokemon"
+      focus={FOCUS.pokemon}
       lift={0.3}
       position={[0.02, 0.03, 0]}
       rotation={[0, -0.22, 0]}
     >
-      <B args={[0.42, 0.07, 0.185]} position={[0, 0.035, 0]} color={P.red} rough={0.26} metal={0.45} />
-      <B args={[0.21, 0.062, 0.16]} position={[-0.015, 0.098, 0]} color={P.red} rough={0.26} metal={0.45} />
-      <B args={[0.19, 0.04, 0.163]} position={[-0.015, 0.1, 0]} color="#1b2028" rough={0.15} metal={0.3} />
-      {/* a splitter and a stripe, so it reads as a specific car */}
-      <B args={[0.06, 0.018, 0.19]} position={[0.2, 0.014, 0]} color="#15181d" rough={0.5} />
-      <B args={[0.42, 0.012, 0.03]} position={[0, 0.071, 0]} color={P.cream} rough={0.4} />
-      {[-1, 1].map((sz) =>
-        [-1, 1].map((sx) => (
-          <mesh key={`${sx}${sz}`} position={[sx * 0.14, 0.018, sz * 0.098]} rotation={[Math.PI / 2, 0, 0]} castShadow>
-            <cylinderGeometry args={[0.039, 0.039, 0.028, 14]} />
-            <meshStandardMaterial color={P.ink} roughness={0.9} />
-          </mesh>
-        ))
-      )}
+      {/* the little display stand it sits in */}
+      <mesh position={[0, 0.012, 0]} castShadow receiveShadow>
+        <cylinderGeometry args={[0.072, 0.086, 0.024, 24]} />
+        <meshStandardMaterial color="#2a2d34" roughness={0.6} metalness={0.25} />
+      </mesh>
+
+      <group position={[0, BALL_R + 0.016, 0]}>
+        {/*
+          phi sweeps around the equator, theta runs pole to pole, so the
+          halves differ in their THETA start — not phi. Putting the half-turn
+          in the phi slot gives you two top caps rotated against each other
+          and no underside at all.
+        */}
+        {/* upper half: theta 0 (north pole) to PI/2 (equator) */}
+        <mesh castShadow>
+          <sphereGeometry args={[BALL_R, 32, 20, 0, Math.PI * 2, 0, Math.PI / 2]} />
+          <meshStandardMaterial color="#ee1515" roughness={0.3} metalness={0.08} />
+        </mesh>
+        {/* lower half: theta PI/2 (equator) to PI (south pole) */}
+        <mesh castShadow>
+          <sphereGeometry args={[BALL_R, 32, 20, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2]} />
+          <meshStandardMaterial color="#f0f0f0" roughness={0.34} metalness={0.05} />
+        </mesh>
+
+        {/* the band around the equator, proud of the shell */}
+        <mesh rotation={[Math.PI / 2, 0, 0]} castShadow>
+          <cylinderGeometry args={[BALL_R * 1.004, BALL_R * 1.004, 0.016, 32]} />
+          <meshStandardMaterial color="#17181c" roughness={0.5} />
+        </mesh>
+
+        {/* the catch: a black ring with a lit button in it, facing the room */}
+        <mesh position={[0, 0, BALL_R * 0.995]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.033, 0.033, 0.006, 24]} />
+          <meshStandardMaterial color="#17181c" roughness={0.5} />
+        </mesh>
+        <mesh position={[0, 0, BALL_R * 1.01]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.022, 0.022, 0.008, 24]} />
+          <meshStandardMaterial
+            color="#f6f5f2"
+            emissive="#ff5f6a"
+            emissiveIntensity={lit ? 2.6 : 0.5}
+            roughness={0.25}
+            toneMapped={false}
+          />
+        </mesh>
+      </group>
     </Hotspot>
   )
 }
@@ -1678,7 +1723,7 @@ function Shelf() {
       <B args={[1.85, 0.06, 0.3]} position={[0, 0, 0]} color={ASH} rough={0.55} />
       <B args={[1.75, 0.035, 0.035]} position={[0, -0.06, 0.12]} color={P.metalDark} metal={0.6} />
       <Dslr />
-      <ModelCar />
+      <PokeBall />
       <Trophy />
     </group>
   )

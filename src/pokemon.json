@@ -1,0 +1,75 @@
+{
+  "generated": "2026-10-13",
+  "list": [
+    {
+      "q": "charizard",
+      "id": 6,
+      "name": "charizard",
+      "types": [
+        "fire",
+        "flying"
+      ],
+      "art": "/pokemon/6.png",
+      "dex": "Spits fire that is hot enough to melt boulders. Known to cause forest fires unintentionally.",
+      "url": "https://www.pokemon.com/us/pokedex/charizard"
+    },
+    {
+      "q": "gengar",
+      "id": 94,
+      "name": "gengar",
+      "types": [
+        "ghost",
+        "poison"
+      ],
+      "art": "/pokemon/94.png",
+      "dex": "Under a full moon, this Pokémon likes to mimic the shadows of people and laugh at their fright.",
+      "url": "https://www.pokemon.com/us/pokedex/gengar"
+    },
+    {
+      "q": "lucario",
+      "id": 448,
+      "name": "lucario",
+      "types": [
+        "fighting",
+        "steel"
+      ],
+      "art": "/pokemon/448.png",
+      "dex": "It has the ability to sense the auras of all things. It understands human speech.",
+      "url": "https://www.pokemon.com/us/pokedex/lucario"
+    },
+    {
+      "q": "snorlax",
+      "id": 143,
+      "name": "snorlax",
+      "types": [
+        "normal"
+      ],
+      "art": "/pokemon/143.png",
+      "dex": "Very lazy. Just eats and sleeps. As its rotund bulk builds, it becomes steadily more slothful.",
+      "url": "https://www.pokemon.com/us/pokedex/snorlax"
+    },
+    {
+      "q": "umbreon",
+      "id": 197,
+      "name": "umbreon",
+      "types": [
+        "dark"
+      ],
+      "art": "/pokemon/197.png",
+      "dex": "When agitated, this Pokémon pro tects itself by spraying poisonous sweat from its pores.",
+      "url": "https://www.pokemon.com/us/pokedex/umbreon"
+    },
+    {
+      "q": "dragonite",
+      "id": 149,
+      "name": "dragonite",
+      "types": [
+        "dragon",
+        "flying"
+      ],
+      "art": "/pokemon/149.png",
+      "dex": "An extremely rarely seen marine Pokémon. Its intelligence is said to match that of humans.",
+      "url": "https://www.pokemon.com/us/pokedex/dragonite"
+    }
+  ]
+}
